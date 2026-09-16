@@ -177,7 +177,7 @@ h3 {
 h2 {
   font-size: clamp(2rem, 4.4vw, 3.1rem);
   font-weight: 800;
-  line-height: 1.08;
+  line-height: 1.18;
 }
 
 h1 em,
@@ -186,10 +186,18 @@ h2 em,
   font-style: normal;
   color: var(--accent-text);
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10'%3E%3Cpath d='M2 6 Q30 1 60 5 T118 4' stroke='%235c4028' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-dasharray='6 5'/%3E%3C/svg%3E")
-    no-repeat 0 100% / 100% 0.28em;
-  padding-bottom: 0.12em;
+    no-repeat 0 100% / 100% 0.26em;
+  /* The dash sits in the padding, below the lowest descender (g, p, y), so it
+     never crosses a letter */
+  padding-bottom: 0.36em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
+}
+
+/* Headings with an underlined phrase reserve room for the dash under the last line */
+h1:has(em),
+h2:has(em) {
+  padding-bottom: 0.5em;
 }
 
 .eyebrow {
@@ -588,7 +596,7 @@ h2 em,
 .hero h1 {
   font-size: clamp(2.5rem, 7.6vw, 5.1rem);
   font-weight: 800;
-  line-height: 1;
+  line-height: 1.1;
   letter-spacing: -0.015em;
   margin-top: 1rem;
   color: var(--hero-ink);
@@ -1607,7 +1615,7 @@ section[id] {
 .big {
   font-size: clamp(2.3rem, 6vw, 4.4rem);
   font-weight: 800;
-  line-height: 1.04;
+  line-height: 1.16;
   max-width: 16ch;
   margin-inline: auto;
 }
@@ -1661,12 +1669,248 @@ section[id] {
   color: #d9ceb6;
 }
 
-.footer-ridge {
-  display: block;
+/* ---------- Ridgeline above the footer (the lillyseay.com hero range) ---------- */
+.ridge {
+  position: relative;
   width: 100%;
-  height: 4.5rem;
-  margin-bottom: -1px;
-  fill: var(--forest);
+  margin-top: 1rem;
+  line-height: 0;
+  --layer-1: #d6e0e6;
+  --layer-2: #b4c6cf;
+  --layer-3: #8fa9ad;
+  --layer-front: #5e8069;
+  --ground: var(--forest);
+  --fog: rgba(255, 255, 255, 0.7);
+}
+
+@media (prefers-color-scheme: dark) {
+  .ridge {
+    --layer-1: #1a252c;
+    --layer-2: #1f3036;
+    --layer-3: #263d3e;
+    --layer-front: #2f4b3d;
+    --fog: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.ridge svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.layer-1 {
+  fill: var(--layer-1);
+}
+
+.layer-2 {
+  fill: var(--layer-2);
+}
+
+.layer-3 {
+  fill: var(--layer-3);
+}
+
+.layer-front {
+  fill: var(--layer-front);
+}
+
+.ground {
+  fill: var(--ground);
+}
+
+.layer {
+  will-change: transform;
+}
+
+.fog {
+  fill: var(--fog);
+  filter: blur(14px);
+  animation: fog-drift 18s ease-in-out infinite alternate;
+}
+
+.fog-b {
+  animation-duration: 24s;
+  animation-direction: alternate-reverse;
+}
+
+@keyframes fog-drift {
+  from {
+    transform: translateX(-40px);
+  }
+  to {
+    transform: translateX(40px);
+  }
+}
+
+.summit-flag line {
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.summit-flag path {
+  fill: var(--flag);
+}
+
+.summit-flag circle {
+  fill: var(--surface);
+  stroke: var(--flag);
+  stroke-width: 3;
+}
+
+.summit-flag {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  opacity: 0;
+}
+
+.ridge.is-visible .summit-flag {
+  animation: flag-plant 0.7s var(--ease-out) both;
+  animation-delay: calc(0.2s + var(--i) * 0.25s);
+}
+
+@keyframes flag-plant {
+  from {
+    opacity: 0;
+    scale: 0.2;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.summit-labels {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.summit-label {
+  --tx: -50%;
+  --lift: 2.9rem;
+  position: absolute;
+  left: var(--x);
+  bottom: var(--y);
+  transform: translate(var(--tx), calc(-100% - var(--lift)));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-align: center;
+  padding: 0.55rem 0.9rem 0.6rem;
+  border-radius: 0.9rem;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--line);
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.ridge.is-visible .summit-label {
+  animation: label-in 0.7s var(--ease-out) forwards;
+  animation-delay: calc(0.5s + var(--i) * 0.25s);
+}
+
+.summit-label::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 1px;
+  height: 1.2rem;
+  background: var(--line);
+}
+
+.summit-label .year {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+.summit-label .name {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+@keyframes label-in {
+  from {
+    opacity: 0;
+    transform: translate(var(--tx), calc(-100% - var(--lift) + 0.6rem));
+  }
+  to {
+    opacity: 1;
+    transform: translate(var(--tx), calc(-100% - var(--lift)));
+  }
+}
+
+.summit-label:first-child {
+  --tx: -18%;
+}
+
+.summit-label:last-child {
+  --tx: -82%;
+}
+
+.summit-label:first-child::after {
+  left: 18%;
+}
+
+.summit-label:last-child::after {
+  left: 82%;
+}
+
+.summit-list {
+  display: none;
+}
+
+.ridge .ridge-mobile,
+.summit-label-mobile {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .ridge .ridge-desktop,
+  .summit-labels {
+    display: none;
+  }
+  .ridge .ridge-mobile {
+    display: block;
+  }
+  .summit-label-mobile {
+    display: flex;
+    --tx: -50%;
+    --lift: -0.15rem;
+    padding: 0.45rem 0.75rem 0.5rem;
+  }
+  .summit-label-mobile .name {
+    font-size: 0.8rem;
+  }
+  .summit-label-mobile::after {
+    height: 0.55rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fog,
+  .ridge.is-visible .summit-flag,
+  .ridge.is-visible .summit-label {
+    animation: none;
+  }
+  .summit-flag,
+  .summit-label {
+    opacity: 1;
+  }
 }
 
 .footer-body {

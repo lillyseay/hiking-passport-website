@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { site } from "../data/site";
+import Ridgeline from "../components/Ridgeline.astro";
 
 interface Props {
   title: string;
@@ -93,16 +94,7 @@ const sections = [
       <slot />
     </main>
     <footer class="footer">
-      <svg
-        class="footer-ridge"
-        viewBox="0 0 1440 120"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <path
-          d="M0 120 L0 78 L90 52 L170 74 L260 30 L350 66 L430 48 L520 80 L610 22 L700 62 L780 44 L880 76 L960 36 L1050 70 L1130 50 L1220 82 L1320 40 L1440 70 L1440 120 Z"
-        ></path>
-      </svg>
+      <Ridgeline />
       <div class="footer-body">
         <div class="wrap footer-grid">
           <div class="footer-brand">
@@ -128,7 +120,7 @@ const sections = [
         </div>
         <div class="wrap footer-fine">
           <p>
-            © {new Date().getFullYear()}
+            © {new Date().getFullYear()}{" "}
             <a href={site.maker.url}>{site.maker.name}</a>. Theme names are
             inspired by national parks, not affiliated with them.
           </p>
@@ -165,6 +157,43 @@ const sections = [
             io.unobserve(el);
           }
         });
+      }
+
+      // The ridgeline above the footer plants its flags when it scrolls into view,
+      // and its far ranges drift a little slower than the page, like on lillyseay.com
+      const ridge = document.querySelector<HTMLElement>(".ridge");
+      if (ridge) {
+        if (reduce || !("IntersectionObserver" in window)) {
+          ridge.classList.add("is-visible");
+        } else {
+          const ro = new IntersectionObserver(
+            ([e]) => {
+              if (e.isIntersecting) {
+                ridge.classList.add("is-visible");
+                ro.disconnect();
+              }
+            },
+            { threshold: 0.35 },
+          );
+          ro.observe(ridge);
+        }
+        const far = ridge.querySelectorAll<SVGElement>(".layer-1");
+        const mid = ridge.querySelectorAll<SVGElement>(".layer-2");
+        const onRidge = () => {
+          if (reduce) return;
+          const below = Math.min(
+            0,
+            ridge.getBoundingClientRect().top - window.innerHeight,
+          );
+          far.forEach(
+            (el) => (el.style.transform = `translateY(${-below * 0.12}px)`),
+          );
+          mid.forEach(
+            (el) => (el.style.transform = `translateY(${-below * 0.05}px)`),
+          );
+        };
+        onRidge();
+        window.addEventListener("scroll", onRidge, { passive: true });
       }
 
       // Hero headline: words rise out of a blur

@@ -1030,6 +1030,27 @@ export class PassportScene {
     this.invalidate();
   }
 
+  /**
+   * Where the headline column ends, in CSS pixels from the canvas's left edge. On wide
+   * screens the ranges start there and taper into the treeline, so no mountain stands
+   * behind the headline or its buttons.
+   */
+  setSkylineLeft(cssX: number) {
+    const x = Math.max(0, Math.round(cssX));
+    if (x === this.skylineLeftCss) return;
+    this.skylineLeftCss = x;
+    this.invalidate();
+  }
+
+  private skylineLeftCss = 0;
+
+  /** The skyline's left edge in logical units; 0 means edge to edge. */
+  private get skyLeft() {
+    return this.layout.wide
+      ? Math.min(this.skylineLeftCss / this.k, this.w * 0.6)
+      : 0;
+  }
+
   setTime(mode: TimeOfDay | "auto") {
     this.timeMode = mode;
     this.invalidate();
@@ -1132,7 +1153,8 @@ export class PassportScene {
       ? {
           stackTop: 0.3,
           horizon: 0.655,
-          peakXs: [0.63, 0.88, 0.76, 0.52, 0.7],
+          // Fractions of the sky right of the headline column
+          peakXs: [0.4, 0.9, 0.66, 0.22, 0.55],
           wide,
         }
       : {
@@ -1205,12 +1227,10 @@ export class PassportScene {
       const peakY = base - rise + rank * h * 0.02;
       const mountain = isMountain(hike);
       const r = 27 + 5 * rank;
-      const peakX =
-        (n === 1
-          ? this.layout.wide
-            ? 0.66
-            : 0.5
-          : peakXs[i % peakXs.length]) * w;
+      const L = this.skyLeft;
+      const f =
+        n === 1 ? (this.layout.wide ? 0.55 : 0.5) : peakXs[i % peakXs.length];
+      const peakX = L + (w - L) * f;
       return {
         hike,
         peakX,
@@ -1638,6 +1658,16 @@ export class PassportScene {
     const span = Math.min(w, h * 0.82);
     const samples = Math.max(72, Math.round(w / 10));
     const pts: Pt[] = [];
+    // A range that starts at the headline column instead of the screen edge
+    const L = this.skyLeft;
+    const left = L > 0 ? L : -0.02 * w;
+    const sampleX = (i: number) => left + ((1.02 * w - left) * i) / samples;
+    const ground = h * (this.layout.horizon + 0.01);
+    const taper = (x: number, y: number) => {
+      if (L <= 0) return y;
+      const t = Math.min(1, Math.max(0, (x - L) / (span * 0.3)));
+      return ground + (y - ground) * (t * t * (3 - 2 * t));
+    };
 
     if (rounded) {
       const side = peakX < w * 0.5 ? 1 : -1;
@@ -1649,18 +1679,18 @@ export class PassportScene {
       const mainHW = span * r(0.55, 0.7),
         secondHW = span * r(0.5, 0.65);
       for (let i = 0; i <= samples; i++) {
-        const x = -0.02 * w + (1.04 * w * i) / samples;
+        const x = sampleX(i);
         const rel = Math.max(
           0.5,
           dome(Math.abs(x - peakX) / mainHW),
           secondHeight * dome(Math.abs(x - secondX) / secondHW),
         );
-        pts.push({ x, y: baseline - amplitude * rel });
+        pts.push({ x, y: taper(x, baseline - amplitude * rel) });
       }
     } else {
       const j = (s: number) => r(-s, s);
       let verts = [
-        { x: -0.03 * w, rel: 0.1 + j(0.03) },
+        { x: L > 0 ? L : -0.03 * w, rel: 0.1 + j(0.03) },
         { x: peakX - span * (0.46 + j(0.04)), rel: 0.26 + j(0.04) },
         { x: peakX - span * (0.37 + j(0.02)), rel: 0.42 + j(0.03) },
         { x: peakX - span * (0.27 + j(0.03)), rel: 0.48 + j(0.05) },
@@ -1678,7 +1708,9 @@ export class PassportScene {
       ];
       verts = verts
         .filter(
-          (v) => (v.x > -0.03 * w - 1 && v.x < 1.03 * w + 1) || v.x === peakX,
+          (v) =>
+            (v.x >= (L > 0 ? L : -0.03 * w) - 1 && v.x < 1.03 * w + 1) ||
+            v.x === peakX,
         )
         .sort((a, b) => a.x - b.x);
       const relAt = (x: number) => {
@@ -1696,14 +1728,16 @@ export class PassportScene {
         return last.rel;
       };
       for (let i = 0; i <= samples; i++) {
-        const x = -0.02 * w + (1.04 * w * i) / samples;
+        const x = sampleX(i);
         const d = Math.abs(x - peakX) / span;
         const jitter = r(-0.016, 0.016) * Math.min(1, d * 12);
         pts.push({
           x,
-          y:
+          y: taper(
+            x,
             baseline -
-            amplitude * Math.min(1, Math.max(0.06, relAt(x) + jitter)),
+              amplitude * Math.min(1, Math.max(0.06, relAt(x) + jitter)),
+          ),
         });
       }
       let best = 0;
@@ -1732,8 +1766,9 @@ export class PassportScene {
     crest.moveTo(pts[0].x, pts[0].y);
     trace(crest);
     const fill = new Path2D();
-    fill.moveTo(-10, h + 10);
-    fill.lineTo(-10, pts[0].y);
+    const fx = L > 0 ? pts[0].x : -10;
+    fill.moveTo(fx, h + 10);
+    fill.lineTo(fx, pts[0].y);
     fill.lineTo(pts[0].x, pts[0].y);
     trace(fill);
     fill.lineTo(w + 10, pts[pts.length - 1].y);

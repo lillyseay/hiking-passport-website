@@ -57,17 +57,17 @@ export const steps = [
   {
     kind: "Add your hikes",
     title: "Start from the hikes you're actually chasing",
-    body: "Type in the trail, the distance, the climb, and how many days it takes. With Apple Intelligence it can fill the stats in for you, and it tells you how confident it is so you know when to check a guidebook.",
+    body: "Type in the trail, the distance, the climb, and how many days it takes. On a device with Apple Intelligence, it can fill the stats in for you.",
   },
   {
-    kind: "Bring in Health",
-    title: "The plan starts from the week you already have",
-    body: "With your permission the app reads your steps, distance, flights climbed, active energy, and workouts from Apple Health. Nothing is written back. Skip it and everything still works, logged by hand.",
+    kind: "Get a plan",
+    title: "A plan built from how you already train",
+    body: "Hiking Passport uses your Apple Health data to build a training plan from the workouts you already do. It has modifications for disability and access needs, low energy, low time, parenting, and more, so everyone can hit their goal hikes.",
   },
   {
     kind: "Train",
     title: "A ladder between here and the summit",
-    body: "Six milestone signs climb the trail, finishing with two dress rehearsals near eighty percent of the goal. Each rung says how to do it in plain words: on a trail, a treadmill, a stair machine, or in the small things you already do.",
+    body: "Six milestone signs climb the trail, finishing with two dress rehearsals near eighty percent of the goal. Each milestone says how to do it in plain words: on a trail, a treadmill, a stair machine, or in the small things you already do.",
   },
   {
     kind: "Stamp it",
@@ -271,3 +271,17 @@ export const pricing = {
   requirements:
     "iPhone on iOS 26 or later. The watch app needs watchOS 26. Apple Intelligence features need a device that supports it; without one, you enter trail stats by hand and the plan is unchanged.",
 };
+
+// The ridgeline above the footer, built like the one on lillyseay.com: the front
+// range's summits are the season's hikes. x is across the page (0 to 100) and
+// height how tall the peak stands (0 to 100).
+export const ridgeSummits = [
+  { year: "Summited Jun 7", label: "Mount Si · 4,167 ft", x: 16, height: 42 },
+  {
+    year: "Summited Aug 16",
+    label: "South Sister · 10,358 ft",
+    x: 50,
+    height: 92,
+  },
+  { year: "Goal", label: "Mount St. Helens · 8,363 ft", x: 83, height: 76 },
+];

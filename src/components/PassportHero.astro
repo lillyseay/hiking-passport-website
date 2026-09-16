@@ -151,6 +151,16 @@ const themes = [
     },
   });
 
+  // On wide screens the mountains start where the headline column ends
+  const textCol = hero.querySelector<HTMLElement>(".hero-text")!;
+  const measureText = () => {
+    const col = textCol.getBoundingClientRect();
+    const stage = canvas.getBoundingClientRect();
+    scene.setSkylineLeft(col.right - stage.left + 24);
+  };
+  measureText();
+  new ResizeObserver(measureText).observe(hero);
+
   // The page wears the passport's theme, the way the app's accent follows it
   const root = document.documentElement;
   const applyTheme = (id: string) => {
