@@ -113,6 +113,10 @@ export interface Theme {
   meadow: RGB | null;
   accent: RGB;
   accentDark: RGB;
+  /** The light on the tops of the peaks: alpenglow on a sunset theme, pale sun under a clear sky. */
+  alpenglow: RGB | null;
+  /** How far the meadow's bands run toward black. */
+  meadowDeep: number | null;
 }
 
 type ThemeInput = Pick<
@@ -122,7 +126,14 @@ type ThemeInput = Pick<
   Partial<
     Pick<
       Theme,
-      "skyTop" | "skyMid" | "skyHorizon" | "meadow" | "accent" | "accentDark"
+      | "skyTop"
+      | "skyMid"
+      | "skyHorizon"
+      | "meadow"
+      | "accent"
+      | "accentDark"
+      | "alpenglow"
+      | "meadowDeep"
     >
   >;
 
@@ -134,8 +145,11 @@ const theme = (t: ThemeInput): Theme => ({
   meadow: t.meadow ?? null,
   accent: t.accent ?? hex(0x5e9a63),
   accentDark: t.accentDark ?? hex(0x85bd8a),
+  alpenglow: t.alpenglow ?? null,
+  meadowDeep: t.meadowDeep ?? null,
 });
 
+// Palettes from PassportTheme.swift in the iOS app. Keep them in step with it.
 export const THEMES: Theme[] = [
   theme({
     id: "default",
@@ -146,36 +160,48 @@ export const THEMES: Theme[] = [
     ridgeFar: hex(0x9fb4d8),
     ridgeNear: hex(0x6e86b4),
     ground: hex(0xa9cfa6),
+    alpenglow: hex(0xffe9bc),
   }),
+  // Alpenglow on Rainier: lavender overhead, pink through the middle, coral along the
+  // ridgeline, and the last of the sun still on the summits
   theme({
     id: "rainier",
     name: "Rainier",
     park: "Inspired by Mount Rainier",
-    sky: hex(0xfdf6ec),
-    sun: hex(0xf5d49b),
+    sky: hex(0xf7c6be),
+    sun: hex(0xffd6a4),
     ridgeFar: hex(0xf0ac85),
-    ridgeNear: hex(0xd9836b),
-    ground: hex(0xa8c2a0),
-    skyTop: hex(0xb8cbee),
-    skyMid: hex(0xfae3d8),
-    skyHorizon: hex(0xfff0d8),
+    ridgeNear: hex(0xc2705e),
+    ground: hex(0x8db078),
+    skyTop: hex(0x9a97d6),
+    skyMid: hex(0xf0a3be),
+    skyHorizon: hex(0xffb48e),
+    meadow: hex(0x8db078),
     accent: hex(0xa85a38),
     accentDark: hex(0xe5a183),
+    alpenglow: hex(0xff5a2e),
   }),
+  // The grove: bark brown and rust, a tan forest floor, sage greens, and a canopy sky
+  // washed almost to white by the light coming through it
   theme({
     id: "redwood",
     name: "Redwood",
     park: "Inspired by Redwood",
-    sky: hex(0xf4f1e9),
-    sun: hex(0xd5dfc4),
-    ridgeFar: hex(0xc88870),
-    ridgeNear: hex(0xa6705a),
-    ground: hex(0xa8bc96),
-    skyTop: hex(0xbfd6d9),
-    skyHorizon: hex(0xfaf8f1),
-    accent: hex(0x2c6e4f),
-    accentDark: hex(0x7fc49b),
+    sky: hex(0xd5dedd),
+    sun: hex(0xefeae0),
+    ridgeFar: hex(0xa0522b),
+    ridgeNear: hex(0x4a3123),
+    ground: hex(0x87a365),
+    skyTop: hex(0x9fbacb),
+    skyMid: hex(0xc8d5d6),
+    skyHorizon: hex(0xe6e4e2),
+    meadow: hex(0x87a365),
+    accent: hex(0x5c7a55),
+    accentDark: hex(0x9bbf92),
+    alpenglow: hex(0xf6eedc),
+    meadowDeep: 0.3,
   }),
+  // Northern dusk: indigo through violet to lavender, boreal green below
   theme({
     id: "voyageurs",
     name: "Voyageurs",
@@ -191,22 +217,27 @@ export const THEMES: Theme[] = [
     meadow: hex(0x7fba88),
     accent: hex(0x5a5788),
     accentDark: hex(0xa3a0d2),
+    alpenglow: hex(0xffdcb0),
   }),
+  // Desert sunset: slate overhead, rose through the middle, dusty mauve at the horizon
   theme({
     id: "saguaro",
     name: "Saguaro",
     park: "Inspired by Saguaro",
-    sky: hex(0xfbdcc9),
-    sun: hex(0xf3b285),
-    ridgeFar: hex(0xdc93a6),
-    ridgeNear: hex(0xb87285),
-    ground: hex(0xafb183),
-    skyTop: hex(0xd6b3d1),
-    skyMid: hex(0xf7ccca),
-    skyHorizon: hex(0xffecd3),
+    sky: hex(0xe0bfc0),
+    sun: hex(0xf0b9a8),
+    ridgeFar: hex(0xc79aa4),
+    ridgeNear: hex(0x8e5a63),
+    ground: hex(0x8c9a6b),
+    skyTop: hex(0x8fa0b0),
+    skyMid: hex(0xe5899a),
+    skyHorizon: hex(0xbe95a2),
+    meadow: hex(0x8c9a6b),
     accent: hex(0x8b4c63),
     accentDark: hex(0xce9ca6),
+    alpenglow: hex(0xe58c87),
   }),
+  // The northern lights: indigo overhead, teal at the horizon, ribbons that move
   theme({
     id: "aurora",
     name: "Aurora",
@@ -222,7 +253,9 @@ export const THEMES: Theme[] = [
     meadow: hex(0x85be7f),
     accent: hex(0x1e7a63),
     accentDark: hex(0x6fd8b4),
+    alpenglow: hex(0xd6f7e6),
   }),
+  // High desert noon: saturated blue overhead, bleached at the horizon
   theme({
     id: "white-sands",
     name: "White Sands",
@@ -234,8 +267,9 @@ export const THEMES: Theme[] = [
     ground: hex(0xf2eee2),
     skyTop: hex(0x66a8e6),
     skyHorizon: hex(0xf0f6fa),
-    accent: hex(0x2e7b79),
-    accentDark: hex(0x79cbc6),
+    accent: hex(0x2b6ca8),
+    accentDark: hex(0x7fbce8),
+    alpenglow: hex(0xfff6da),
   }),
 ];
 
@@ -439,10 +473,11 @@ const DAY: Palette = {
   sunGlow: rgb(1, 0.94, 0.7),
   sunGlowAlpha: 1,
   haze: rgb(0.94, 0.97, 1),
-  ridgeFarthest: rgb(0.74, 0.83, 0.92),
-  ridgeFar: rgb(0.68, 0.76, 0.88),
-  ridgeMid: rgb(0.44, 0.52, 0.64),
-  ridgeNear: rgb(0.27, 0.44, 0.45),
+  // The same natural rock every themed passport draws
+  ridgeFarthest: Rock.day.farthest,
+  ridgeFar: Rock.day.far,
+  ridgeMid: Rock.day.mid,
+  ridgeNear: Rock.day.near,
   ridgeDoneFar: Rock.day.doneFar,
   ridgeDoneNear: Rock.day.doneNear,
   ridgeBase: rgb(0.34, 0.52, 0.38),
@@ -455,8 +490,8 @@ const DAY: Palette = {
   ],
   treeline: rgb(0.19, 0.35, 0.28),
   pines: [rgb(0.18, 0.34, 0.27), rgb(0.14, 0.29, 0.23), rgb(0.11, 0.24, 0.19)],
-  trail: rgb(0.93, 0.86, 0.7),
-  trailEdge: rgb(0.72, 0.62, 0.46),
+  trail: rgb(0.945, 0.891, 0.766),
+  trailEdge: rgb(0.78, 0.7, 0.58),
   signPost: rgb(0.55, 0.42, 0.28),
   stampInk: stampInk(DEFAULT),
   stampPaper: stampPaper(DEFAULT),
@@ -539,7 +574,7 @@ function themed(t: Theme, night: boolean): Palette {
   let bands: RGB[], base: RGB, pines: RGB[];
   const m = t.meadow ?? (pale ? t.ground : null);
   if (m) {
-    const deep = pale ? 0.12 : 0.2;
+    const deep = t.meadowDeep ?? (pale ? 0.12 : 0.2);
     bands = [
       mix(m, WHITE, 0.08),
       m,
@@ -592,12 +627,16 @@ function themedNight(t: Theme, pale: boolean, groundHue: number): Palette {
   const pines = n.pines.map((c) =>
     adjusted(withHue(c, groundHue), groundSat, 0),
   );
-  const horizon = mix(withHue(n.skyHorizon, skyHue), n.skyHorizon, 0.4);
+  const haze = mix(withHue(n.skyHorizon, skyHue), n.skyHorizon, 0.4);
+  // The theme's own ramp taken down into the dark rather than a generic navy: Rainier
+  // stays lavender into rose, Saguaro stays plum. The horizon keeps the most colour.
+  const ink = rgb(0.05, 0.07, 0.16);
   return {
     ...n,
-    skyTop: mix(n.skyTop, t.sky, 0.1),
-    skyHorizon: horizon,
-    haze: horizon,
+    skyTop: mix(t.skyTop, ink, 0.8),
+    skyMid: mix(t.skyMid ?? t.sky, ink, 0.74),
+    skyHorizon: mix(t.skyHorizon, ink, 0.62),
+    haze,
     ridgeFarthest: r?.farthest ?? n.ridgeFarthest,
     ridgeFar: r?.far ?? n.ridgeFar,
     ridgeMid: r?.mid ?? n.ridgeMid,
@@ -1855,6 +1894,7 @@ export class PassportScene {
       }
       this.shadeRidge(c, prof, ridge.peakX, done ? 0.8 : 0.5);
       this.hazeRidge(c, p, prof, ridge.depth, ridges.length, !done);
+      this.alpenglowWash(c, prof, ridge, done ? 1 : 0.6);
 
       // Crest line, cut away wherever a nearer range stands in front
       c.save();
@@ -1916,6 +1956,35 @@ export class PassportScene {
     g2.addColorStop(1, `rgba(0,0,0,${0.14 * strength})`);
     c.fillStyle = g2;
     c.fillRect(0, y0 - 400, w, h);
+    c.restore();
+  }
+
+  /**
+   * The theme's light laid on the top of a ridge and gone by halfway down, the way the
+   * sun leaves a summit lit while the valley has fallen into shadow. Dimmed in dark
+   * mode, and gone after dark.
+   */
+  private alpenglowWash(
+    c: CanvasRenderingContext2D,
+    prof: { fill: Path2D },
+    ridge: Ridge,
+    alpha: number,
+  ) {
+    const glow = this.theme.alpenglow;
+    const tod = this.timeOfDay;
+    if (!glow || tod === "night" || ridge.amplitude <= 12) return;
+    const a = alpha * (tod === "dark" ? 0.7 : 1);
+    const top = ridge.peakY - ridge.amplitude * 0.08;
+    const bottom = ridge.peakY + ridge.amplitude * 0.44;
+    c.save();
+    c.clip(prof.fill);
+    const g = c.createLinearGradient(0, top, 0, bottom);
+    g.addColorStop(0, css(glow, 0.35 * a));
+    g.addColorStop(0.3, css(glow, 0.31 * a));
+    g.addColorStop(0.68, css(glow, 0.12 * a));
+    g.addColorStop(1, css(glow, 0));
+    c.fillStyle = g;
+    c.fillRect(0, top, this.w, bottom - top);
     c.restore();
   }
 
@@ -2329,8 +2398,6 @@ export class PassportScene {
     c.lineWidth = 1;
     c.lineJoin = "round";
     c.stroke(body);
-    c.fillStyle = "rgba(255,255,255,0.22)";
-    c.fill(ribbon(edges(0.42)));
   }
 
   private footprintEndY(spine: Pt[], signs: SignPlacement[]) {
@@ -2668,26 +2735,6 @@ export class PassportScene {
       );
     const sun = 0.3 * scale;
     const contact = Math.min(1, Math.max(0.35, scale));
-
-    // Shade pooled at the foot of the post
-    this.softShadow(
-      c,
-      `rgba(0,0,0,${dim ? 0.09 : 0.13})`,
-      2.4 * contact,
-      () => {
-        c.beginPath();
-        c.ellipse(
-          s.base.x + sun * 3,
-          s.base.y - 2.8 * contact * 0.2,
-          9 * contact,
-          2.8 * contact,
-          0,
-          0,
-          Math.PI * 2,
-        );
-        c.fill();
-      },
-    );
 
     // Post and board, lifted off the grass with a drop shadow
     const postW = 5 * scale;
