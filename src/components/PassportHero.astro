@@ -3,7 +3,9 @@
 // milestone signs up the trail and camp where the boot prints end. Stamps and signs
 // are real buttons laid over the canvas, and the dock re-themes the scene and the
 // whole page the way the app's theme picker does.
-import { site, heroPassport } from "../data/site";
+import { heroPassport } from "../data/site";
+import Sun from "@lucide/astro/icons/sun";
+import Moon from "@lucide/astro/icons/moon";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const themes = [
@@ -35,7 +37,6 @@ const themes = [
     <div class="hero-copy">
       <div class="wrap">
         <div class="hero-text">
-          <span class="chip fade-up">{site.status}</span>
           <h1>Your season, <em>stamped.</em></h1>
           <p class="lede fade-up" style="--delay: 0.6s">
             Add the hikes you're chasing, train with a buddy, and stamp each
@@ -78,15 +79,8 @@ const themes = [
       }
       <span class="dock-divider" aria-hidden="true"></span>
       <button class="dock-time" aria-label="Time of day: now" data-mode="auto">
-        <svg viewBox="0 0 24 24" aria-hidden="true"
-          ><circle class="sun" cx="12" cy="12" r="4.2"></circle><path
-            class="rays"
-            d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.5 1.5M17.2 17.2l1.5 1.5M5.3 18.7l1.5-1.5M17.2 6.8l1.5-1.5"
-          ></path><path
-            class="moon"
-            d="M15.5 3.8a8.5 8.5 0 1 0 4.7 12.9A7 7 0 0 1 15.5 3.8Z"
-          ></path></svg
-        >
+        <Sun class="sun" aria-hidden="true" />
+        <Moon class="moon" aria-hidden="true" />
       </button>
     </div>
   </div>
@@ -151,12 +145,15 @@ const themes = [
     },
   });
 
-  // On wide screens the mountains start where the headline column ends
-  const textCol = hero.querySelector<HTMLElement>(".hero-text")!;
+  // On wide screens the mountains start at the trail's gap in the treeline, but never
+  // behind the headline's buttons
+  const actions = hero.querySelector<HTMLElement>(".hero-actions")!;
   const measureText = () => {
-    const col = textCol.getBoundingClientRect();
+    const right = Math.max(
+      ...[...actions.children].map((el) => el.getBoundingClientRect().right),
+    );
     const stage = canvas.getBoundingClientRect();
-    scene.setSkylineLeft(col.right - stage.left + 24);
+    scene.setSkylineLeft(right - stage.left + 24);
   };
   measureText();
   new ResizeObserver(measureText).observe(hero);

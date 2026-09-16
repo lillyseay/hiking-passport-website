@@ -1,6 +1,23 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import PassportHero from "../components/PassportHero.astro";
+import Signpost from "@lucide/astro/icons/signpost";
+import Smartphone from "@lucide/astro/icons/smartphone";
+import Route from "@lucide/astro/icons/route";
+import PawPrint from "@lucide/astro/icons/paw-print";
+import Palette from "@lucide/astro/icons/palette";
+import Watch from "@lucide/astro/icons/watch";
+import ShieldCheck from "@lucide/astro/icons/shield-check";
+import Ticket from "@lucide/astro/icons/ticket";
+import Tent from "@lucide/astro/icons/tent";
+import HeartPulse from "@lucide/astro/icons/heart-pulse";
+import Accessibility from "@lucide/astro/icons/accessibility";
+import Target from "@lucide/astro/icons/target";
+import Clock from "@lucide/astro/icons/clock";
+import SlidersHorizontal from "@lucide/astro/icons/sliders-horizontal";
+import BatteryLow from "@lucide/astro/icons/battery-low";
+import Timer from "@lucide/astro/icons/timer";
+import Mountain from "@lucide/astro/icons/mountain";
 import {
   site,
   steps,
@@ -13,6 +30,14 @@ import {
 } from "../data/site";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+// Lucide icons (ISC license), in the rounded, even-stroke style of the app's SF Symbols
+const noticeIcons = {
+  tent: Tent,
+  heart: HeartPulse,
+  watch: Watch,
+  eye: Accessibility,
+};
+const tierIcons = [Target, Clock, SlidersHorizontal, BatteryLow, Timer];
 const parks = [
   { id: "default", name: "Meadow", park: "The app's own", free: true },
   { id: "rainier", name: "Rainier", park: "Inspired by Mount Rainier" },
@@ -31,7 +56,9 @@ const parks = [
   <section id="trailhead" class="trailhead">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="eyebrow">Trailhead</p>
+        <p class="eyebrow">
+          <Signpost class="eyebrow-icon" aria-hidden="true" />Trailhead
+        </p>
         <h2>Four signs to the <em>summit</em></h2>
         <p class="sub">
           A passport for your hiking season, from the first goal to the last
@@ -61,7 +88,9 @@ const parks = [
   <section id="screens" class="screens">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="eyebrow">Inside the app</p>
+        <p class="eyebrow">
+          <Smartphone class="eyebrow-icon" aria-hidden="true" />Inside the app
+        </p>
         <h2>Everything on <em>one trail</em></h2>
       </div>
     </div>
@@ -87,7 +116,9 @@ const parks = [
   <section id="plan" class="plan topo">
     <div class="wrap plan-grid">
       <div class="reveal">
-        <p class="eyebrow">Training plan</p>
+        <p class="eyebrow">
+          <Route class="eyebrow-icon" aria-hidden="true" />Training plan
+        </p>
         <h2>More than one <em>way up</em></h2>
         {plan.body.map((para) => <p class="plan-copy">{para}</p>)}
         <ul class="ways" aria-label="Ways to train">
@@ -98,15 +129,20 @@ const parks = [
         <p class="tiers-head">Every milestone, five ways</p>
         <ol class="stagger">
           {
-            plan.tiers.map((t) => (
-              <li>
-                <span class="tier-dot" aria-hidden="true" />
-                <div>
-                  <strong>{t.name}</strong>
-                  <span>{t.body}</span>
-                </div>
-              </li>
-            ))
+            plan.tiers.map((t, i) => {
+              const Icon = tierIcons[i];
+              return (
+                <li>
+                  <span class="tier-icon" aria-hidden="true">
+                    <Icon />
+                  </span>
+                  <div>
+                    <strong>{t.name}</strong>
+                    <span>{t.body}</span>
+                  </div>
+                </li>
+              );
+            })
           }
         </ol>
         <p class="tiers-note">
@@ -121,7 +157,9 @@ const parks = [
   <section id="buddies" class="buddies">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="eyebrow">Hiking buddies</p>
+        <p class="eyebrow">
+          <PawPrint class="eyebrow-icon" aria-hidden="true" />Hiking buddies
+        </p>
         <h2>Pick someone to <em>hike with</em></h2>
         <p class="sub">
           Six forest animals, each from a community that gets told the trail is
@@ -132,10 +170,7 @@ const parks = [
       <ul class="buddy-grid stagger">
         {
           buddies.map((b, i) => (
-            <li
-              class="buddy-card"
-              style={`--tint: ${b.tint}; --bob: ${-i * 0.9}s`}
-            >
+            <li class="buddy-card" style={`--tint: ${b.tint}`}>
               <div class="patch">
                 <img src={`${base}${b.art}`} alt="" loading="lazy" />
               </div>
@@ -154,7 +189,9 @@ const parks = [
   <section id="themes" class="themes">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="eyebrow">Passport themes</p>
+        <p class="eyebrow">
+          <Palette class="eyebrow-icon" aria-hidden="true" />Passport themes
+        </p>
         <h2>Seven parks to <em>wear</em></h2>
         <p class="sub">
           Pick one and the passport up top changes with it, along with this
@@ -197,7 +234,9 @@ const parks = [
   <section id="wrist" class="wrist">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="eyebrow">Apple Watch</p>
+        <p class="eyebrow">
+          <Watch class="eyebrow-icon" aria-hidden="true" />Apple Watch
+        </p>
         <h2>Your passport, <em>on your wrist</em></h2>
         <p class="sub">
           The watch keeps its own copy, so it opens with your passport whether
@@ -224,7 +263,9 @@ const parks = [
   <section id="yours" class="yours topo">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="eyebrow">Ranger station</p>
+        <p class="eyebrow">
+          <ShieldCheck class="eyebrow-icon" aria-hidden="true" />Ranger station
+        </p>
         <h2>Made to <em>stay yours</em></h2>
       </div>
       <ul class="notice-grid stagger">
@@ -232,28 +273,10 @@ const parks = [
           points.map((p) => (
             <li class="card notice">
               <span class="notice-icon" aria-hidden="true">
-                {p.icon === "tent" && (
-                  <svg viewBox="0 0 24 24">
-                    <path d="M12 4 3 20h18L12 4Zm0 0v16m-3 0 3-6 3 6" />
-                  </svg>
-                )}
-                {p.icon === "heart" && (
-                  <svg viewBox="0 0 24 24">
-                    <path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10Z" />
-                  </svg>
-                )}
-                {p.icon === "watch" && (
-                  <svg viewBox="0 0 24 24">
-                    <rect x="6.5" y="6" width="11" height="12" rx="3" />
-                    <path d="M9 6V3h6v3M9 18v3h6v-3M12 9.5V12l1.8 1.2" />
-                  </svg>
-                )}
-                {p.icon === "eye" && (
-                  <svg viewBox="0 0 24 24">
-                    <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                )}
+                {(() => {
+                  const Icon = noticeIcons[p.icon as keyof typeof noticeIcons];
+                  return <Icon />;
+                })()}
               </span>
               <h3>{p.title}</h3>
               <p>{p.body}</p>
@@ -268,7 +291,9 @@ const parks = [
   <section id="pricing" class="pricing">
     <div class="wrap">
       <div class="section-head reveal">
-        <p class="eyebrow">Park entrance</p>
+        <p class="eyebrow">
+          <Ticket class="eyebrow-icon" aria-hidden="true" />Park entrance
+        </p>
         <h2>What's free, and what <em>Pro</em> adds</h2>
       </div>
       <div class="permits stagger">
@@ -278,7 +303,16 @@ const parks = [
             <h3>Free</h3>
             <p class="permit-price">$0</p>
           </div>
-          <ul>{pricing.free.map((f) => <li>{f}</li>)}</ul>
+          <ul>
+            {
+              pricing.free.map((f) => (
+                <li>
+                  <Mountain class="permit-icon" aria-hidden="true" />
+                  {f}
+                </li>
+              ))
+            }
+          </ul>
         </div>
         <div class="permit pro">
           <div class="permit-head">
@@ -295,7 +329,16 @@ const parks = [
               }
             </div>
           </div>
-          <ul>{pricing.pro.map((f) => <li>{f}</li>)}</ul>
+          <ul>
+            {
+              pricing.pro.map((f) => (
+                <li>
+                  <Mountain class="permit-icon" aria-hidden="true" />
+                  {f}
+                </li>
+              ))
+            }
+          </ul>
         </div>
       </div>
       <p class="plan-note reveal">{pricing.requirements}</p>

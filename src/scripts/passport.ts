@@ -1031,9 +1031,9 @@ export class PassportScene {
   }
 
   /**
-   * Where the headline column ends, in CSS pixels from the canvas's left edge. On wide
-   * screens the ranges start there and taper into the treeline, so no mountain stands
-   * behind the headline or its buttons.
+   * The right edge of the headline's buttons, in CSS pixels from the canvas's left edge.
+   * On wide screens the ranges start at the gap in the treeline left of the trail, and
+   * never further left than this, so no mountain stands behind the buttons.
    */
   setSkylineLeft(cssX: number) {
     const x = Math.max(0, Math.round(cssX));
@@ -1046,9 +1046,17 @@ export class PassportScene {
 
   /** The skyline's left edge in logical units; 0 means edge to edge. */
   private get skyLeft() {
-    return this.layout.wide
-      ? Math.min(this.skylineLeftCss / this.k, this.w * 0.6)
-      : 0;
+    if (!this.layout.wide) return 0;
+    const trailGap = this.w * 0.5 - this.treelineGap;
+    return Math.min(
+      Math.max(this.skylineLeftCss / this.k, trailGap),
+      this.w * 0.6,
+    );
+  }
+
+  /** Half the opening in the treeline where the trail reaches the mountains. */
+  private get treelineGap() {
+    return Math.max(this.w * 0.06 * Math.max(this.swing, 0.6), 22);
   }
 
   setTime(mode: TimeOfDay | "auto") {
@@ -2178,7 +2186,7 @@ export class PassportScene {
   ) {
     const { w } = this;
     const redwood = this.theme.id === "redwood" && !!this.images.redwood;
-    const gap = Math.max(w * 0.06 * Math.max(this.swing, 0.6), 22);
+    const gap = this.treelineGap;
     const tod = this.timeOfDay;
     const dim = tod !== "day";
     const ranks = redwood
