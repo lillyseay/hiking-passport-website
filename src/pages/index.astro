@@ -1,0 +1,348 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PassportHero from "../components/PassportHero.astro";
+import {
+  site,
+  steps,
+  shots,
+  plan,
+  buddies,
+  points,
+  watchShots,
+  pricing,
+} from "../data/site";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const parks = [
+  { id: "default", name: "Meadow", park: "The app's own", free: true },
+  { id: "rainier", name: "Rainier", park: "Inspired by Mount Rainier" },
+  { id: "redwood", name: "Redwood", park: "Inspired by Redwood" },
+  { id: "voyageurs", name: "Voyageurs", park: "Inspired by Voyageurs" },
+  { id: "saguaro", name: "Saguaro", park: "Inspired by Saguaro" },
+  { id: "aurora", name: "Aurora", park: "Inspired by the northern lights" },
+  { id: "white-sands", name: "White Sands", park: "Inspired by White Sands" },
+];
+---
+
+<Layout title={`${site.name}: ${site.tagline}`}>
+  <PassportHero />
+
+  <!-- Trailhead: how it works, as signs along a trail -->
+  <section id="trailhead" class="trailhead">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Trailhead</p>
+        <h2>Four signs to the <em>summit</em></h2>
+        <p class="sub">
+          A passport for your hiking season, from the first goal to the last
+          stamp
+        </p>
+      </div>
+      <ol class="trail-steps stagger">
+        {
+          steps.map((s, i) => (
+            <li class="trail-step">
+              <div class="park-sign">
+                <span class="sign-no">{i + 1}</span>
+                <p class="sign-kind">{s.kind}</p>
+              </div>
+              <div class="card step-card">
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Screens -->
+  <section id="screens" class="screens">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Inside the app</p>
+        <h2>Everything on <em>one trail</em></h2>
+      </div>
+    </div>
+    <ul class="shot-rail reveal" tabindex="0" aria-label="App screenshots">
+      {
+        shots.map((s) => (
+          <li class="tilt">
+            <img
+              src={`${base}${s.image}`}
+              alt={s.alt}
+              loading="lazy"
+              width="591"
+              height="1280"
+            />
+          </li>
+        ))
+      }
+    </ul>
+    <p class="rail-hint reveal" aria-hidden="true">Scroll the trail →</p>
+  </section>
+
+  <!-- Plan -->
+  <section id="plan" class="plan topo">
+    <div class="wrap plan-grid">
+      <div class="reveal">
+        <p class="eyebrow">Training plan</p>
+        <h2>More than one <em>way up</em></h2>
+        {plan.body.map((para) => <p class="plan-copy">{para}</p>)}
+        <ul class="ways" aria-label="Ways to train">
+          {plan.ways.map((w) => <li>{w}</li>)}
+        </ul>
+      </div>
+      <div class="glass tiers reveal">
+        <p class="tiers-head">Every milestone, five ways</p>
+        <ol class="stagger">
+          {
+            plan.tiers.map((t) => (
+              <li>
+                <span class="tier-dot" aria-hidden="true" />
+                <div>
+                  <strong>{t.name}</strong>
+                  <span>{t.body}</span>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="tiers-note">
+          Suggestions, not medical advice. Run a plan past your clinician if
+          your health should shape it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Buddies -->
+  <section id="buddies" class="buddies">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Hiking buddies</p>
+        <h2>Pick someone to <em>hike with</em></h2>
+        <p class="sub">
+          Six forest animals, each from a community that gets told the trail is
+          not for them. They're friends who hike, not trainers or doctors, and
+          they never scold.
+        </p>
+      </div>
+      <ul class="buddy-grid stagger">
+        {
+          buddies.map((b, i) => (
+            <li
+              class="buddy-card"
+              style={`--tint: ${b.tint}; --bob: ${-i * 0.9}s`}
+            >
+              <div class="patch">
+                <img src={`${base}${b.art}`} alt="" loading="lazy" />
+              </div>
+              <h3>{b.name}</h3>
+              <p class="buddy-species">{b.species}</p>
+              <p class="buddy-note">{b.note}</p>
+              <blockquote>“{b.quote}”</blockquote>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Themes -->
+  <section id="themes" class="themes">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Passport themes</p>
+        <h2>Seven parks to <em>wear</em></h2>
+        <p class="sub">
+          Pick one and the passport up top changes with it, along with this
+          page. In the app it dresses your widgets, your watch and your Home
+          Screen icon too.
+        </p>
+      </div>
+      <ul class="park-grid stagger">
+        {
+          parks.map((p) => (
+            <li>
+              <button
+                class="park"
+                data-set-theme={p.id}
+                aria-pressed={p.id === "default" ? "true" : "false"}
+              >
+                <img
+                  src={`${base}/themes/theme-${p.id}.svg`}
+                  alt=""
+                  width="88"
+                  height="88"
+                  loading="lazy"
+                />
+                <span class="park-name">{p.name}</span>
+                <span class="park-sub">{p.park}</span>
+                {p.free ? (
+                  <span class="park-tag">Free</span>
+                ) : (
+                  <span class="park-tag pro">Pro</span>
+                )}
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Watch and widgets -->
+  <section id="wrist" class="wrist">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Apple Watch</p>
+        <h2>Your passport, <em>on your wrist</em></h2>
+        <p class="sub">
+          The watch keeps its own copy, so it opens with your passport whether
+          or not your phone came along. Cross a milestone off or stamp a summit
+          from there.
+        </p>
+      </div>
+      <ul class="watch-row stagger">
+        {
+          watchShots.map((w) => (
+            <li>
+              <div class="watch-frame">
+                <img src={`${base}${w.image}`} alt={w.alt} loading="lazy" />
+              </div>
+              <p class="watch-cap">{w.cap}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Made to stay yours -->
+  <section id="yours" class="yours topo">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Ranger station</p>
+        <h2>Made to <em>stay yours</em></h2>
+      </div>
+      <ul class="notice-grid stagger">
+        {
+          points.map((p) => (
+            <li class="card notice">
+              <span class="notice-icon" aria-hidden="true">
+                {p.icon === "tent" && (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 4 3 20h18L12 4Zm0 0v16m-3 0 3-6 3 6" />
+                  </svg>
+                )}
+                {p.icon === "heart" && (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10Z" />
+                  </svg>
+                )}
+                {p.icon === "watch" && (
+                  <svg viewBox="0 0 24 24">
+                    <rect x="6.5" y="6" width="11" height="12" rx="3" />
+                    <path d="M9 6V3h6v3M9 18v3h6v-3M12 9.5V12l1.8 1.2" />
+                  </svg>
+                )}
+                {p.icon === "eye" && (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                )}
+              </span>
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing" class="pricing">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Park entrance</p>
+        <h2>What's free, and what <em>Pro</em> adds</h2>
+      </div>
+      <div class="permits stagger">
+        <div class="permit">
+          <div class="permit-head">
+            <p class="permit-kind">Day pass</p>
+            <h3>Free</h3>
+            <p class="permit-price">$0</p>
+          </div>
+          <ul>{pricing.free.map((f) => <li>{f}</li>)}</ul>
+        </div>
+        <div class="permit pro">
+          <div class="permit-head">
+            <p class="permit-kind">Season pass</p>
+            <h3>Hiking Passport Pro</h3>
+            <div class="permit-prices">
+              {
+                pricing.prices.map((p) => (
+                  <p class="permit-price">
+                    {p.price} <span>{p.per}</span>
+                    <small>{p.note}</small>
+                  </p>
+                ))
+              }
+            </div>
+          </div>
+          <ul>{pricing.pro.map((f) => <li>{f}</li>)}</ul>
+        </div>
+      </div>
+      <p class="plan-note reveal">{pricing.requirements}</p>
+    </div>
+  </section>
+
+  <!-- Closing -->
+  <section id="get" class="closing">
+    <div class="wrap reveal">
+      <div class="closing-stamp" aria-hidden="true">
+        <svg viewBox="0 0 120 120">
+          <circle
+            cx="60"
+            cy="60"
+            r="52"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-dasharray="5 5"></circle>
+          <path
+            d="M34 74 50 52l8 10 12-18 16 30Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3.5"
+            stroke-linejoin="round"></path>
+          <text x="60" y="94" text-anchor="middle">2026 SEASON</text>
+        </svg>
+      </div>
+      <h2 class="big">Your first stamp is <em>waiting up there.</em></h2>
+      <p class="closing-sub">
+        {site.status}. Want to hear the day it lands? Send me a note.
+      </p>
+      <div class="links">
+        <span class="store-badge" aria-label="Coming soon to the App Store">
+          <svg viewBox="0 0 24 24" aria-hidden="true"
+            ><path
+              d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5a4.3 4.3 0 0 0-3.4-1.8c-1.4-.2-2.8.8-3.5.8s-1.8-.8-3-.8A4.5 4.5 0 0 0 4.7 9.6c-1.6 2.8-.4 6.9 1.1 9.2.8 1.1 1.7 2.3 2.9 2.3s1.6-.8 3-.8 1.8.8 3 .7c1.3 0 2.1-1.1 2.8-2.3a10 10 0 0 0 1.3-2.6 4 4 0 0 1-2.4-3.5ZM14.2 5.8A4 4 0 0 0 15.1 3a4.1 4.1 0 0 0-2.7 1.4 3.8 3.8 0 0 0-1 2.7 3.4 3.4 0 0 0 2.8-1.3Z"
+            ></path></svg
+          >
+          <span><small>Coming soon to the</small>App Store</span>
+        </span>
+        <a
+          class="pill-link"
+          href={`mailto:${site.email}?subject=${encodeURIComponent("Tell me when Hiking Passport launches")}`}
+          >Email me at launch</a
+        >
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,242 @@
+---
+// The hero is the app's passport, drawn live: stamped summits, a goal still waiting,
+// milestone signs up the trail and camp where the boot prints end. Stamps and signs
+// are real buttons laid over the canvas, and the dock re-themes the scene and the
+// whole page the way the app's theme picker does.
+import { site, heroPassport } from "../data/site";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const themes = [
+  { id: "default", name: "Meadow" },
+  { id: "rainier", name: "Rainier" },
+  { id: "redwood", name: "Redwood" },
+  { id: "voyageurs", name: "Voyageurs" },
+  { id: "saguaro", name: "Saguaro" },
+  { id: "aurora", name: "Aurora" },
+  { id: "white-sands", name: "White Sands" },
+];
+---
+
+<section
+  class="hero"
+  id="top"
+  data-base={base}
+  data-passport={JSON.stringify(heroPassport)}
+>
+  <div class="hero-stage">
+    <canvas class="hero-canvas" aria-hidden="true"></canvas>
+    <div
+      class="hero-targets"
+      role="group"
+      aria-label="The passport: tap a stamp or a sign"
+    >
+    </div>
+
+    <div class="hero-copy">
+      <div class="wrap">
+        <div class="hero-text">
+          <span class="chip fade-up">{site.status}</span>
+          <h1>Your season, <em>stamped.</em></h1>
+          <p class="lede fade-up" style="--delay: 0.6s">
+            Add the hikes you're chasing, train with a buddy, and stamp each
+            summit when you stand on top.
+          </p>
+          <div class="hero-actions fade-up" style="--delay: 0.8s">
+            <a class="pill-link" href="#get">Get the app</a>
+            <a class="pill-link ghost" href="#trailhead">How it works</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-dock fade-up" style="--delay: 1.4s">
+    <p class="dock-lede">
+      Add the hikes you're chasing, train with a buddy, and stamp each summit
+      when you stand on top.
+    </p>
+    <p class="dock-hint" aria-live="polite">Tap the goal stamp to summit it</p>
+    <div class="dock glass" role="radiogroup" aria-label="Passport theme">
+      {
+        themes.map((t, i) => (
+          <button
+            class="dock-theme"
+            role="radio"
+            aria-checked={i === 0 ? "true" : "false"}
+            data-theme-id={t.id}
+            title={t.name}
+          >
+            <img
+              src={`${base}/themes/theme-${t.id}.svg`}
+              alt=""
+              width="34"
+              height="34"
+            />
+            <span class="sr-only">{t.name}</span>
+          </button>
+        ))
+      }
+      <span class="dock-divider" aria-hidden="true"></span>
+      <button class="dock-time" aria-label="Time of day: now" data-mode="auto">
+        <svg viewBox="0 0 24 24" aria-hidden="true"
+          ><circle class="sun" cx="12" cy="12" r="4.2"></circle><path
+            class="rays"
+            d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.5 1.5M17.2 17.2l1.5 1.5M5.3 18.7l1.5-1.5M17.2 6.8l1.5-1.5"
+          ></path><path
+            class="moon"
+            d="M15.5 3.8a8.5 8.5 0 1 0 4.7 12.9A7 7 0 0 1 15.5 3.8Z"
+          ></path></svg
+        >
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import {
+    PassportScene,
+    themeById,
+    cssHex,
+    type SceneData,
+    type TimeOfDay,
+  } from "../scripts/passport";
+
+  const hero = document.querySelector<HTMLElement>(".hero")!;
+  const canvas = hero.querySelector<HTMLCanvasElement>(".hero-canvas")!;
+  const targets = hero.querySelector<HTMLElement>(".hero-targets")!;
+  const hint = hero.querySelector<HTMLElement>(".dock-hint")!;
+  const base = hero.dataset.base ?? "";
+  const data = JSON.parse(hero.dataset.passport!) as SceneData;
+  data.buddy = { src: `${base}/buddies/buddy-cat.png`, name: "Biscuit" };
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  let saved = "default";
+  try {
+    saved = localStorage.getItem("hp-theme") ?? "default";
+  } catch {}
+
+  const scene = new PassportScene(canvas, data, {
+    theme: saved,
+    reduceMotion,
+    onTargets: (list) => {
+      targets.replaceChildren(
+        ...list.map((t) => {
+          const b = document.createElement("button");
+          b.className = `hero-target ${t.kind}`;
+          b.style.cssText = `left:${t.x}px;top:${t.y}px;width:${t.w}px;height:${t.h}px`;
+          b.setAttribute("aria-label", t.label);
+          b.addEventListener("click", () => {
+            if (t.kind === "hike") {
+              const hike = data.hikes.find((h) => h.id === t.id)!;
+              const wasGoal = !hike.completed;
+              scene.stamp(t.id);
+              hint.textContent = wasGoal
+                ? `${hike.name}, summited. Stamped ${hike.completed?.toLowerCase()}`
+                : `${hike.name}, stamped again`;
+            } else {
+              scene.toggleMilestone(t.id);
+              const m = data.milestones.find((x) => x.id === t.id)!;
+              hint.textContent = `${m.label}: ${m.achieved ? "crossed off" : "back on the list"}`;
+            }
+            b.classList.remove("pulse");
+            void b.offsetWidth;
+            b.classList.add("pulse");
+          });
+          return b;
+        }),
+      );
+      applySky();
+    },
+  });
+
+  // The page wears the passport's theme, the way the app's accent follows it
+  const root = document.documentElement;
+  const applyTheme = (id: string) => {
+    const t = themeById(id);
+    root.style.setProperty("--accent-light", cssHex(t.accent));
+    root.style.setProperty("--accent-dark", cssHex(t.accentDark));
+    root.dataset.park = t.id;
+    hero.querySelectorAll<HTMLButtonElement>(".dock-theme").forEach((b) => {
+      b.setAttribute("aria-checked", String(b.dataset.themeId === t.id));
+    });
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-set-theme]")
+      .forEach((b) => {
+        b.setAttribute("aria-pressed", String(b.dataset.setTheme === t.id));
+      });
+  };
+  // Headline and nav ink that reads on this sky
+  const applySky = () => {
+    const light = scene.skyInk === "dark";
+    hero.classList.toggle("sky-light", light);
+    root.style.setProperty("--hero-ink", light ? "#1c2940" : "#ffffff");
+  };
+
+  const setTheme = (id: string) => {
+    scene.setTheme(id);
+    applyTheme(id);
+    applySky();
+    try {
+      localStorage.setItem("hp-theme", id);
+    } catch {}
+  };
+  applyTheme(saved);
+  applySky();
+
+  hero
+    .querySelectorAll<HTMLButtonElement>(".dock-theme")
+    .forEach((b) =>
+      b.addEventListener("click", () => setTheme(b.dataset.themeId!)),
+    );
+  document.addEventListener("click", (e) => {
+    const b = (e.target as Element).closest<HTMLElement>("[data-set-theme]");
+    if (!b) return;
+    setTheme(b.dataset.setTheme!);
+    hint.textContent = `Wearing ${themeById(b.dataset.setTheme).name}`;
+  });
+
+  // Time of day: follow the clock, or pin day or night
+  const timeBtn = hero.querySelector<HTMLButtonElement>(".dock-time")!;
+  const modes: (TimeOfDay | "auto")[] = ["auto", "day", "night"];
+  const labels = {
+    auto: "Time of day: now",
+    day: "Time of day: daytime",
+    night: "Time of day: night",
+    dark: "",
+  };
+  timeBtn.addEventListener("click", () => {
+    const next =
+      modes[
+        (modes.indexOf(timeBtn.dataset.mode as TimeOfDay | "auto") + 1) %
+          modes.length
+      ];
+    timeBtn.dataset.mode = next;
+    timeBtn.setAttribute("aria-label", labels[next]);
+    scene.setTime(next);
+    timeBtn.classList.toggle("is-night", scene.timeOfDay !== "day");
+    hint.textContent =
+      next === "auto"
+        ? "Following your clock"
+        : next === "day"
+          ? "Daytime"
+          : "After dark";
+    applySky();
+  });
+  timeBtn.classList.toggle("is-night", scene.timeOfDay !== "day");
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", () => {
+      scene.setTime(scene.timeMode);
+      applySky();
+    });
+
+  scene.start({
+    pine: `${base}/decor/decor-pine.svg`,
+    redwood: `${base}/decor/decor-redwood.svg`,
+    backpack: `${base}/decor/decor-backpack.png`,
+    firepit: `${base}/decor/decor-firepit.png`,
+    buddy: data.buddy.src,
+  });
+</script>
