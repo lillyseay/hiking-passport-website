@@ -1666,15 +1666,24 @@ export class PassportScene {
     const span = Math.min(w, h * 0.82);
     const samples = Math.max(72, Math.round(w / 10));
     const pts: Pt[] = [];
-    // A range that starts at the headline column instead of the screen edge
+    // On wide screens the ranges still run the full width, but left of the trail they
+    // settle into low foothills: the same rugged crest, flattened toward the ground,
+    // so the tallest peak's flank rolls away naturally and stays under the headline's
+    // buttons instead of stopping at a hard edge.
     const L = this.skyLeft;
-    const left = L > 0 ? L : -0.02 * w;
-    const sampleX = (i: number) => left + ((1.02 * w - left) * i) / samples;
+    const sampleX = (i: number) => -0.02 * w + (1.04 * w * i) / samples;
     const ground = h * (this.layout.horizon + 0.01);
+    const buttons = this.skylineLeftCss / this.k;
+    const flatStart = Math.min(buttons, L) - w * 0.15;
+    const flatEnd = L + span * 0.25;
     const taper = (x: number, y: number) => {
       if (L <= 0) return y;
-      const t = Math.min(1, Math.max(0, (x - L) / (span * 0.3)));
-      return ground + (y - ground) * (t * t * (3 - 2 * t));
+      const t = Math.min(
+        1,
+        Math.max(0, (x - flatStart) / Math.max(1, flatEnd - flatStart)),
+      );
+      const f = 0.08 + 0.92 * (t * t * (3 - 2 * t));
+      return ground + (y - ground) * f;
     };
 
     if (rounded) {
@@ -1698,7 +1707,7 @@ export class PassportScene {
     } else {
       const j = (s: number) => r(-s, s);
       let verts = [
-        { x: L > 0 ? L : -0.03 * w, rel: 0.1 + j(0.03) },
+        { x: -0.03 * w, rel: 0.1 + j(0.03) },
         { x: peakX - span * (0.46 + j(0.04)), rel: 0.26 + j(0.04) },
         { x: peakX - span * (0.37 + j(0.02)), rel: 0.42 + j(0.03) },
         { x: peakX - span * (0.27 + j(0.03)), rel: 0.48 + j(0.05) },
@@ -1716,9 +1725,7 @@ export class PassportScene {
       ];
       verts = verts
         .filter(
-          (v) =>
-            (v.x >= (L > 0 ? L : -0.03 * w) - 1 && v.x < 1.03 * w + 1) ||
-            v.x === peakX,
+          (v) => (v.x > -0.03 * w - 1 && v.x < 1.03 * w + 1) || v.x === peakX,
         )
         .sort((a, b) => a.x - b.x);
       const relAt = (x: number) => {
@@ -1774,7 +1781,7 @@ export class PassportScene {
     crest.moveTo(pts[0].x, pts[0].y);
     trace(crest);
     const fill = new Path2D();
-    const fx = L > 0 ? pts[0].x : -10;
+    const fx = -10;
     fill.moveTo(fx, h + 10);
     fill.lineTo(fx, pts[0].y);
     fill.lineTo(pts[0].x, pts[0].y);
