@@ -211,8 +211,9 @@ export const THEMES: Theme[] = [
     ridgeFar: hex(0x9e97c6),
     ridgeNear: hex(0x7e79ac),
     ground: hex(0x9fd4a4),
-    skyTop: hex(0xb3b3e4),
-    skyMid: hex(0xd4ceed),
+    // Lighter overhead than the app: a wide sky reads far darker than a phone's
+    skyTop: mix(hex(0xb3b3e4), WHITE, 0.35),
+    skyMid: mix(hex(0xd4ceed), WHITE, 0.2),
     skyHorizon: hex(0xf1eff9),
     meadow: hex(0x7fba88),
     accent: hex(0x5a5788),
@@ -229,9 +230,10 @@ export const THEMES: Theme[] = [
     ridgeFar: hex(0xc79aa4),
     ridgeNear: hex(0x8e5a63),
     ground: hex(0x8c9a6b),
-    skyTop: hex(0x8fa0b0),
-    skyMid: hex(0xe5899a),
-    skyHorizon: hex(0xbe95a2),
+    // Lighter overhead than the app: a wide sky reads far darker than a phone's
+    skyTop: mix(hex(0x8fa0b0), WHITE, 0.4),
+    skyMid: mix(hex(0xe5899a), WHITE, 0.25),
+    skyHorizon: mix(hex(0xbe95a2), WHITE, 0.3),
     meadow: hex(0x8c9a6b),
     accent: hex(0x8b4c63),
     accentDark: hex(0xce9ca6),
@@ -951,6 +953,16 @@ interface SignPlacement {
   trailY: number;
 }
 
+interface AuroraPillar {
+  x: number;
+  width: number;
+  height: number;
+  hue: number;
+  speed: number;
+  phase: number;
+  alpha: number;
+}
+
 interface Decor {
   kind: "tent" | "backpack" | "firepit" | "buddy";
   base: Pt;
@@ -1534,19 +1546,28 @@ export class PassportScene {
   }
 
   // AuroraSky.swift
-  private auroraPillars = (() => {
+  /**
+   * The curtains of light. The app draws eleven across a phone; a wide screen gets the
+   * same density, so the sky reads as many standing columns rather than a few broad
+   * smudges. Seeded, so they stand in the same places on every visit.
+   */
+  private pillarCache: { count: number; pillars: AuroraPillar[] } | null = null;
+  private auroraPillars(count: number) {
+    if (this.pillarCache?.count === count) return this.pillarCache.pillars;
     const r = rng(20260910);
     const hues = [0, 0, 1, 0, 2, 1, 0, 2, 1, 0, 2];
-    return hues.map((hue, i) => ({
-      x: i / hues.length + r(-0.035, 0.035),
+    const pillars = Array.from({ length: count }, (_, i) => ({
+      x: (i + 0.5) / count + (r(-0.035, 0.035) * 11) / count,
       width: r(0.035, 0.105),
       height: r(0.45, 1),
-      hue,
+      hue: hues[i % hues.length],
       speed: r(0.22, 0.55),
       phase: r(0, 6.28),
       alpha: r(0.45, 0.95),
     }));
-  })();
+    this.pillarCache = { count, pillars };
+    return pillars;
+  }
 
   private drawAurora(c: CanvasRenderingContext2D, time: number) {
     const { w, h } = this;
@@ -1581,7 +1602,7 @@ export class PassportScene {
 
     // Everything below is pure glow, so it is drawn on a canvas a fraction of the size
     // and scaled up, which softens it far more cheaply than blurring at full size.
-    const q = 0.18;
+    const q = 0.32;
     const main = c;
     this.lights.width = Math.max(1, Math.round(this.cssW * q));
     this.lights.height = Math.max(1, Math.round(this.cssH * q));
@@ -1597,7 +1618,9 @@ export class PassportScene {
       if (this.hasFilter)
         c.filter = `blur(${(px * this.k * q * 0.6).toFixed(2)}px)`;
     };
-    const span = Math.min(w, h * 1.4);
+    // One phone's width of sky, the unit the app's aurora is proportioned to
+    const unit = Math.min(w, 430);
+    const count = Math.max(11, Math.round((11 * w) / unit));
 
     // Swirls
     const arcs = [
@@ -1621,7 +1644,8 @@ export class PassportScene {
       }
       c.save();
       c.globalCompositeOperation = blend;
-      c.globalAlpha = a.alpha * (dark ? 1 : 0.72);
+      // The swirls are background sweep; the standing columns carry the light
+      c.globalAlpha = a.alpha * (dark ? 1 : 0.72) * 0.45;
       blur(h * 0.026);
       c.lineCap = "round";
       c.strokeStyle = css(lights[a.hue], 0.75);
@@ -1634,8 +1658,8 @@ export class PassportScene {
     });
 
     // Pillars
-    for (const pl of this.auroraPillars) {
-      const sway = Math.sin(time * pl.speed + pl.phase) * span * 0.03;
+    for (const pl of this.auroraPillars(count)) {
+      const sway = Math.sin(time * pl.speed + pl.phase) * unit * 0.03;
       const breathe =
         0.8 + 0.2 * Math.sin(time * pl.speed * 1.6 + pl.phase * 1.9);
       const glow =
@@ -1643,7 +1667,7 @@ export class PassportScene {
       const foot = skyBottom * 0.64;
       const cx = pl.x * w + sway;
       const top = foot - foot * pl.height * breathe;
-      const halfLow = pl.width * span * 0.5,
+      const halfLow = pl.width * unit * 0.5,
         halfHigh = halfLow * 1.45;
       const col = new Path2D();
       col.moveTo(cx - halfLow, foot + h * 0.03);
@@ -1660,7 +1684,7 @@ export class PassportScene {
       c.save();
       c.globalCompositeOperation = blend;
       c.globalAlpha = pl.alpha * glow * (dark ? 1 : 0.88);
-      blur(span * 0.03);
+      blur(unit * 0.03);
       c.fillStyle = grad;
       c.fill(col);
       c.restore();
