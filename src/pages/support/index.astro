@@ -1,0 +1,137 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { site } from "../../data/site";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const faqs = [
+  {
+    q: "The app is not seeing my workouts",
+    a: "Open the Health app, tap your picture, then Privacy, then Apps, then Hiking Passport, and turn on the categories you want to share. The app asks for five: steps, walking and running distance, flights climbed, active energy, and workouts. If one is off, everything still works without it.",
+  },
+  {
+    q: "A milestone says it looks done but has not crossed itself off",
+    a: "That is on purpose. The app spots an outing that matches a milestone and suggests it, but only you decide it counts. Tap the circle on the sign to cross it off.",
+  },
+  {
+    q: "My plan does not look right",
+    a: "Open the training questionnaire again and change what you told it. How many days a week, how long a session is, and anything you need it to work around all feed straight back into the plan. If it still looks wrong, email me with what you expected and what you got.",
+  },
+  {
+    q: "Do I need Apple Intelligence?",
+    a: "No. Your plan is built by rules, not by a model, so it is the same with Apple Intelligence off. What you lose is the shortcut that fills in a trail's stats for you, the generated name for your plan, and your buddy's note being in their own voice. On a device that does not support Apple Intelligence, you type the stats in and everything else runs normally.",
+  },
+  {
+    q: "I typed in a trail and the stats look wrong",
+    a: "If you used the Apple Intelligence lookup, treat the numbers as an estimate and check them against a trail guide. The app tells you how confident it is for exactly this reason. You can edit any hike and correct every number by hand.",
+  },
+  {
+    q: "Does my passport sync to my other devices?",
+    a: "No. There is no account and no cloud, so a passport lives on the iPhone that made it. A new iPhone starts empty. Your Pro subscription does restore, with Restore Purchases.",
+  },
+  {
+    q: "The Apple Watch app is empty",
+    a: "Open Hiking Passport on your iPhone once with the watch nearby. The watch shows a copy of what the phone sent it, then keeps working with the phone away.",
+  },
+  {
+    q: "The paywall is empty, or says plans are not ready",
+    a: "That means the App Store has not returned the subscriptions to your device yet. Everything free is still yours in the meantime. If it lasts more than a day, email me.",
+  },
+  {
+    q: "How do I manage or cancel my subscription?",
+    a: "Subscriptions are handled by Apple. Open Settings, tap your name, then Subscriptions, and choose Hiking Passport. You can also open Settings inside the app and manage it there.",
+  },
+  {
+    q: "I paid but Pro is still locked",
+    a: "Use Restore Purchases in the app, signed in to the same Apple Account you bought with. If it still does not unlock, email me and include that Apple Account email.",
+  },
+  {
+    q: "Can I get a refund?",
+    a: "Refunds go through Apple rather than me. Go to reportaproblem.apple.com, sign in, and choose the purchase. You can also start a refund request from Settings inside the app.",
+  },
+  {
+    q: "How do I delete my data?",
+    a: "Deleting the app removes everything it stored on your iPhone, including your passport, your hikes, and your summit photos. Your Apple Health data belongs to Apple Health and stays there. If you also want the purchase record tied to your install deleted, email me and I will take care of it.",
+  },
+  {
+    q: "Something is hard to use, or unusable",
+    a: "Tell me. Accessibility problems get treated as bugs, not requests. Describe what you hit and which assistive technology you were using and I will work on it.",
+  },
+];
+---
+
+<Layout
+  title="Support, Hiking Passport"
+  description="Help with Hiking Passport: Apple Health permissions, plans, subscriptions, and how to reach a human."
+>
+  <section class="post legal">
+    <div class="wrap">
+      <div class="post-head">
+        <p class="eyebrow">Hiking Passport</p>
+        <h1>Support</h1>
+        <p class="lede">
+          Hiking Passport is made by one person, and that person answers the
+          email. Write to me and you get me, not a ticket queue.
+        </p>
+      </div>
+
+      <div class="post-body">
+        <h2>Get in touch</h2>
+        <p>
+          Email <a href={`mailto:${site.email}`}>{site.email}</a> with what happened
+          and what you expected. If it is a bug, the iPhone model and the iOS version
+          help me find it faster. I read every message and usually reply within a
+          couple of days.
+        </p>
+
+        <h2>Common questions</h2>
+        <div class="faq">
+          {
+            faqs.map((f) => (
+              <details class="faq-item">
+                <summary>
+                  <span>{f.q}</span>
+                  <span class="chev" aria-hidden="true" />
+                </summary>
+                <p>{f.a}</p>
+              </details>
+            ))
+          }
+        </div>
+
+        <h2>What it runs on</h2>
+        <p>
+          Hiking Passport needs an iPhone on iOS 26 or later and runs in
+          portrait. The watch app needs watchOS 26. Apple Intelligence features
+          need a device that supports Apple Intelligence, and the app works
+          without one.
+        </p>
+
+        <h2>Safety</h2>
+        <p>
+          Hiking Passport is not a medical or safety service. Your hiking buddy
+          is a friend who hikes, not a trainer or a doctor. Run a plan past your
+          clinician if anything about your health should shape it. Trail
+          conditions, weather, and your own judgment are always yours to read.
+        </p>
+
+        <h2>Privacy</h2>
+        <p>
+          There is no account and no cloud. Your passport, your hikes, and your
+          photos are stored on your iPhone, and Apple Health is read only. The{
+            " "
+          }
+          <a href={`${base}/privacy/`}>privacy policy</a>{" "}
+          spells out exactly what the app reads and what leaves the device.
+        </p>
+
+        <h2>About the app</h2>
+        <p>
+          <a href={`${base}/`}>Hiking Passport</a> turns the hikes you are chasing
+          into a passport you fill in over a season. It is made by Lilly Seay in Portland,
+          Oregon.
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>

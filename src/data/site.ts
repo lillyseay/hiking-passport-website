@@ -11,8 +11,8 @@ export const site = {
   status: "Coming soon to the App Store",
   email: "team@lillyseay.co",
   maker: { name: "Lilly Seay", url: "https://lillyseay.com" },
-  support: "https://lillyseay.com/hiking-passport/support/",
-  privacy: "https://lillyseay.com/hiking-passport/privacy/",
+  support: "/support/",
+  privacy: "/privacy/",
   instagram: "https://www.instagram.com/lillyseay/",
   tiktok: "https://www.tiktok.com/@lillyseay",
 };
