@@ -1,0 +1,179 @@
+---
+// An auto-advancing screenshot carousel: the current image centered at full size, its
+// neighbors stepping back to each side, a title and one sentence underneath. Used for
+// the iPhone screenshots and the Apple Watch screens.
+import ChevronLeft from "@lucide/astro/icons/chevron-left";
+import ChevronRight from "@lucide/astro/icons/chevron-right";
+
+interface Item {
+  image: string;
+  alt: string;
+  title: string;
+  blurb: string;
+}
+
+interface Props {
+  label: string;
+  items: Item[];
+  width: number;
+  height: number;
+  variant?: string;
+}
+
+const { label, items, width, height, variant } = Astro.props;
+---
+
+<div
+  class:list={["shots", "reveal", variant]}
+  style={`--shot-ratio: ${(height / width).toFixed(4)}`}
+  role="region"
+  aria-roledescription="carousel"
+  aria-label={label}
+>
+  <div class="shots-stage">
+    {
+      items.map((it, i) => (
+        <figure
+          class="shot"
+          data-index={i}
+          data-title={it.title}
+          data-blurb={it.blurb}
+          role="group"
+          aria-roledescription="slide"
+          aria-label={`${i + 1} of ${items.length}`}
+        >
+          <img
+            src={it.image}
+            alt={it.alt}
+            loading="eager"
+            width={width}
+            height={height}
+            draggable="false"
+          />
+        </figure>
+      ))
+    }
+  </div>
+  <div class="shots-controls">
+    <button class="shots-arrow" data-dir="-1" aria-label="Previous">
+      <ChevronLeft aria-hidden="true" />
+    </button>
+    <div class="shots-dots">
+      {
+        items.map((it, i) => (
+          <button
+            class="shots-dot"
+            data-go={i}
+            aria-label={`Show ${i + 1}: ${it.title}`}
+          />
+        ))
+      }
+    </div>
+    <button class="shots-arrow" data-dir="1" aria-label="Next">
+      <ChevronRight aria-hidden="true" />
+    </button>
+  </div>
+  <div class="shots-text" aria-live="polite">
+    <p class="shots-caption"></p>
+    <p class="shots-blurb"></p>
+  </div>
+</div>
+
+<script>
+  // Each carousel scrubs through on its own, one at a time, with the current one
+  // centered. Arrows, dots, keys, and a swipe all move it, and it holds still
+  // while it is being hovered, focused, or scrolled out of view.
+  document.querySelectorAll<HTMLElement>(".shots").forEach((root) => {
+    const slides = [...root.querySelectorAll<HTMLElement>(".shot")];
+    const dots = [...root.querySelectorAll<HTMLButtonElement>(".shots-dot")];
+    const text = root.querySelector<HTMLElement>(".shots-text")!;
+    const caption = root.querySelector<HTMLElement>(".shots-caption")!;
+    const blurb = root.querySelector<HTMLElement>(".shots-blurb")!;
+    const n = slides.length;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    let active = 0;
+    let timer = 0;
+    let hovered = false;
+    let focused = false;
+    let visible = false;
+
+    const render = (announce = false) => {
+      slides.forEach((el, i) => {
+        let off = i - active;
+        if (off > n / 2) off -= n;
+        if (off < -n / 2) off += n;
+        el.style.setProperty("--off", String(off));
+        el.style.setProperty("--abs", String(Math.abs(off)));
+        el.classList.toggle("is-active", off === 0);
+        el.classList.toggle("is-hidden", Math.abs(off) > 2);
+        el.setAttribute("aria-hidden", String(off !== 0));
+      });
+      dots.forEach((d, i) =>
+        d.setAttribute("aria-current", String(i === active)),
+      );
+      text.setAttribute("aria-live", announce ? "polite" : "off");
+      caption.textContent = slides[active].dataset.title ?? "";
+      blurb.textContent = slides[active].dataset.blurb ?? "";
+    };
+
+    const go = (i: number, announce = false) => {
+      active = (i + n) % n;
+      render(announce);
+      schedule();
+    };
+
+    const schedule = () => {
+      clearTimeout(timer);
+      if (reduce || hovered || focused || !visible) return;
+      timer = window.setTimeout(() => go(active + 1), 3200);
+    };
+
+    root
+      .querySelectorAll<HTMLButtonElement>(".shots-arrow")
+      .forEach((b) =>
+        b.addEventListener("click", () =>
+          go(active + Number(b.dataset.dir), true),
+        ),
+      );
+    dots.forEach((d) =>
+      d.addEventListener("click", () => go(Number(d.dataset.go), true)),
+    );
+    slides.forEach((el, i) =>
+      el.addEventListener("click", () => {
+        if (i !== active) go(i, true);
+      }),
+    );
+    root.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") go(active + 1, true);
+      if (e.key === "ArrowLeft") go(active - 1, true);
+    });
+    root.addEventListener("mouseenter", () => ((hovered = true), schedule()));
+    root.addEventListener("mouseleave", () => ((hovered = false), schedule()));
+    root.addEventListener("focusin", () => ((focused = true), schedule()));
+    root.addEventListener("focusout", () => ((focused = false), schedule()));
+
+    let startX = 0;
+    const stage = root.querySelector<HTMLElement>(".shots-stage")!;
+    stage.addEventListener("pointerdown", (e) => (startX = e.clientX));
+    stage.addEventListener("pointerup", (e) => {
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 40) go(active + (dx < 0 ? 1 : -1), true);
+    });
+
+    new IntersectionObserver(
+      ([e]) => {
+        visible = e.isIntersecting;
+        schedule();
+      },
+      { threshold: 0.4 },
+    ).observe(root);
+    document.addEventListener("visibilitychange", () => {
+      visible = document.visibilityState === "visible" && visible;
+      schedule();
+    });
+
+    render();
+  });
+</script>

@@ -231,26 +231,35 @@ export const watchShots = [
   {
     image: "/watch/1-plan.jpg",
     cap: "The plan",
+    blurb: "Your goal, your progress, and the next milestone at a glance.",
     alt: "The plan on the watch: fourteen miles and 5,100 feet of gain, two of six milestones done, and the next one is to climb 2,300 feet.",
   },
   {
     image: "/watch/2-todays-pick.jpg",
     cap: "Today's pick",
+    blurb:
+      "Your buddy's suggestion for today, plus other workouts that also count.",
     alt: "Today's pick from Aerie: climb 2,300 feet, with a list of other things that also count.",
   },
   {
     image: "/watch/3-ways-to-do-it.jpg",
     cap: "Ways to do it",
+    blurb:
+      "Every milestone broken into options, like the stair machine or a treadmill at an incline.",
     alt: "Ways to do it: fifty eight minutes on a stair machine, eighty eight minutes on a treadmill at a ten percent incline, or 230 flights of stairs over the week.",
   },
   {
     image: "/watch/4-passport.jpg",
     cap: "Your passport",
+    blurb:
+      "A miniature passport on your wrist, with the mountain, the trail, the signs, and your buddy.",
     alt: "The passport drawn on the watch, with the mountain, the trail, milestone signs, and the buddy.",
   },
   {
     image: "/watch/5-insights.jpg",
     cap: "Insights",
+    blurb:
+      "Your stats in your buddy's voice, like a total climb twice the height of Everest.",
     alt: "Aerie took a look: total climb of 78,833 feet, described as the height of Everest twice.",
   },
 ];

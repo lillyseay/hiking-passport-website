@@ -970,11 +970,20 @@ section[id] {
    neighbors stepping back to either side */
 .shots {
   --shot-w: clamp(13rem, 26vw, 17rem);
+  --shot-ratio: 2.166;
+  --shot-radius: 1.6rem;
+}
+
+/* Watch screens: squarer, and a rounder corner like the watch display itself */
+.shots.watch {
+  --shot-w: clamp(12rem, 22vw, 15rem);
+  --shot-radius: 18% / 15%;
+  margin-top: 1rem;
 }
 
 .shots-stage {
   position: relative;
-  height: calc(var(--shot-w) * 2.166 + 2rem);
+  height: calc(var(--shot-w) * var(--shot-ratio) + 2rem);
   overflow: hidden;
   touch-action: pan-y;
   user-select: none;
@@ -1009,7 +1018,7 @@ section[id] {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 1.6rem;
+  border-radius: var(--shot-radius);
   box-shadow: var(--shadow-float);
 }
 
@@ -1428,64 +1437,6 @@ section[id] {
   }
 }
 
-/* ---------- Watch ---------- */
-.watch-row {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 1.1rem;
-}
-
-.watch-row li:nth-child(even) {
-  margin-top: 1.5rem;
-}
-
-.watch-frame {
-  position: relative;
-  border-radius: 2rem;
-  padding: 0.45rem;
-  background: linear-gradient(145deg, #3a3a3c, #1c1c1e);
-  box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-.watch-frame::before {
-  content: "";
-  position: absolute;
-  right: -4px;
-  top: 28%;
-  width: 6px;
-  height: 18%;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #4a4a4c, #2c2c2e);
-}
-
-.watch-frame img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 1.6rem;
-}
-
-.watch-cap {
-  text-align: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  color: var(--ink);
-  margin: 0.8rem 0 0;
-}
-
-@media (max-width: 860px) {
-  .watch-row {
-    grid-template-columns: repeat(5, 11rem);
-    overflow-x: auto;
-    padding-bottom: 1rem;
-  }
-}
-
 /* ---------- Ranger station ---------- */
 .notice-grid {
   list-style: none;
@@ -1544,26 +1495,6 @@ section[id] {
   border: 1px solid var(--line);
   box-shadow: var(--shadow-card);
   overflow: hidden;
-}
-
-/* Ticket notches */
-.permit::before,
-.permit::after {
-  content: "";
-  position: absolute;
-  top: 9.9rem;
-  width: 1.6rem;
-  height: 1.6rem;
-  border-radius: 50%;
-  background: var(--surface);
-}
-
-.permit::before {
-  left: -0.8rem;
-}
-
-.permit::after {
-  right: -0.8rem;
 }
 
 .permit-head {
@@ -1684,7 +1615,6 @@ section[id] {
 
 .closing-stamp svg {
   display: block;
-  transform: rotate(-12deg);
 }
 
 .closing-stamp text {
