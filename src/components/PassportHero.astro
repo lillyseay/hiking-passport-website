@@ -91,6 +91,7 @@ const themes = [
     PassportScene,
     themeById,
     cssHex,
+    spokenDate,
     type SceneData,
     type TimeOfDay,
   } from "../scripts/passport";
@@ -127,7 +128,7 @@ const themes = [
               const wasGoal = !hike.completed;
               scene.stamp(t.id);
               hint.textContent = wasGoal
-                ? `${hike.name}, summited. Stamped ${hike.completed?.toLowerCase()}`
+                ? `${hike.name}, summited. Stamped ${spokenDate(hike.completed!)}`
                 : `${hike.name}, stamped again`;
             } else {
               scene.toggleMilestone(t.id);

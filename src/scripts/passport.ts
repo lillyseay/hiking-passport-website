@@ -276,6 +276,9 @@ export const THEMES: Theme[] = [
   }),
 ];
 
+/** "SEP 17" as "Sep 17", for sentences that read the stamp's date back. */
+export const spokenDate = (d: string) => d.charAt(0) + d.slice(1).toLowerCase();
+
 export const themeById = (id: string | null | undefined) =>
   THEMES.find((t) => t.id === id) ?? THEMES[0];
 
@@ -1440,7 +1443,7 @@ export class PassportScene {
       kind: "hike",
       id: r.hike.id,
       label: r.hike.completed
-        ? `${r.hike.name}, summited ${r.hike.completed.toLowerCase()}. Stamp it again`
+        ? `${r.hike.name}, summited ${spokenDate(r.hike.completed)}. Stamp it again`
         : `${r.hike.name}, goal hike, not yet summited. Stamp the summit`,
       x: (r.stamp.x - 38) * k,
       y: (r.stamp.y - 38) * k,
