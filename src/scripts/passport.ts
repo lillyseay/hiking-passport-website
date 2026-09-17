@@ -173,9 +173,10 @@ export const THEMES: Theme[] = [
     ridgeFar: hex(0xf0ac85),
     ridgeNear: hex(0xc2705e),
     ground: hex(0x8db078),
-    skyTop: hex(0x9a97d6),
-    skyMid: hex(0xf0a3be),
-    skyHorizon: hex(0xffb48e),
+    // Half as deep as the app's: the full-strength ramp is heavy across a wide sky
+    skyTop: mix(hex(0x9a97d6), WHITE, 0.5),
+    skyMid: mix(hex(0xf0a3be), WHITE, 0.5),
+    skyHorizon: mix(hex(0xffb48e), WHITE, 0.5),
     meadow: hex(0x8db078),
     accent: hex(0xa85a38),
     accentDark: hex(0xe5a183),
@@ -230,10 +231,10 @@ export const THEMES: Theme[] = [
     ridgeFar: hex(0xc79aa4),
     ridgeNear: hex(0x8e5a63),
     ground: hex(0x8c9a6b),
-    // Lighter overhead than the app: a wide sky reads far darker than a phone's
-    skyTop: mix(hex(0x8fa0b0), WHITE, 0.4),
-    skyMid: mix(hex(0xe5899a), WHITE, 0.25),
-    skyHorizon: mix(hex(0xbe95a2), WHITE, 0.3),
+    // Half as deep as the app's: the full-strength ramp is heavy across a wide sky
+    skyTop: mix(hex(0x8fa0b0), WHITE, 0.5),
+    skyMid: mix(hex(0xe5899a), WHITE, 0.5),
+    skyHorizon: mix(hex(0xbe95a2), WHITE, 0.5),
     meadow: hex(0x8c9a6b),
     accent: hex(0x8b4c63),
     accentDark: hex(0xce9ca6),
@@ -1669,18 +1670,23 @@ export class PassportScene {
       const top = foot - foot * pl.height * breathe;
       const halfLow = pl.width * unit * 0.5,
         halfHigh = halfLow * 1.45;
+      // The column runs on below its brightest band and fades out to nothing, so the
+      // lights melt into the sky instead of stopping along a hard line
+      const bottom = foot + h * 0.16;
       const col = new Path2D();
-      col.moveTo(cx - halfLow, foot + h * 0.03);
+      col.moveTo(cx - halfLow, bottom);
       col.lineTo(cx - halfHigh, top);
       col.lineTo(cx + halfHigh, top);
-      col.lineTo(cx + halfLow, foot + h * 0.03);
+      col.lineTo(cx + halfLow, bottom);
       col.closePath();
       const lc = lights[pl.hue];
-      const grad = c.createLinearGradient(0, top, 0, foot + h * 0.03);
+      const peak = dark ? 0.85 : 0.72;
+      const grad = c.createLinearGradient(0, top, 0, bottom);
       grad.addColorStop(0, css(lc, 0));
-      grad.addColorStop(0.3, css(lc, 0.3));
-      grad.addColorStop(0.86, css(lc, dark ? 0.85 : 0.72));
-      grad.addColorStop(1, css(lc, dark ? 0.55 : 0.48));
+      grad.addColorStop(0.28, css(lc, 0.3));
+      grad.addColorStop(0.6, css(lc, peak));
+      grad.addColorStop(0.8, css(lc, peak * 0.4));
+      grad.addColorStop(1, css(lc, 0));
       c.save();
       c.globalCompositeOperation = blend;
       c.globalAlpha = pl.alpha * glow * (dark ? 1 : 0.88);
