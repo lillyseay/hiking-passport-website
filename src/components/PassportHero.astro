@@ -144,15 +144,14 @@ const themes = [
     },
   });
 
-  // On wide screens the mountains start at the trail's gap in the treeline, but never
-  // behind the headline's buttons
+  // On wide screens the mountains end at the left edge of the second button, so they
+  // never stand behind the headline or its buttons
   const actions = hero.querySelector<HTMLElement>(".hero-actions")!;
   const measureText = () => {
-    const right = Math.max(
-      ...[...actions.children].map((el) => el.getBoundingClientRect().right),
-    );
+    const buttons = [...actions.children];
+    const edge = (buttons[1] ?? buttons[0])?.getBoundingClientRect().left ?? 0;
     const stage = canvas.getBoundingClientRect();
-    scene.setSkylineLeft(right - stage.left + 24);
+    scene.setSkylineLeft(edge - stage.left);
   };
   measureText();
   new ResizeObserver(measureText).observe(hero);

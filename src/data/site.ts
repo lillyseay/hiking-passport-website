@@ -222,7 +222,7 @@ export const points = [
   },
   {
     icon: "eye",
-    title: "Built to be legible",
+    title: "Accessibility first",
     body: "The whole scene is described for VoiceOver, signs thin out instead of colliding as text grows, and the opening animation skips itself when Reduce Motion is on.",
   },
 ];
