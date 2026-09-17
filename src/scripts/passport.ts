@@ -1065,6 +1065,16 @@ export class PassportScene {
   }
 
   private skylineLeftCss = 0;
+  /** The headline block's right and bottom edges, in CSS pixels. */
+  private heroTextCss = { right: 0, bottom: 0 };
+
+  /** Keeps the ranges clear of the headline, its lede, and its buttons. */
+  setHeroText(right: number, bottom: number) {
+    if (right === this.heroTextCss.right && bottom === this.heroTextCss.bottom)
+      return;
+    this.heroTextCss = { right, bottom };
+    this.invalidate();
+  }
 
   /** The skyline's left edge in logical units; 0 means edge to edge. */
   private get skyLeft() {
@@ -1736,10 +1746,16 @@ export class PassportScene {
     const L = this.skyLeft;
     const left = L > 0 ? L : -0.02 * w;
     const sampleX = (i: number) => left + ((1.02 * w - left) * i) / samples;
-    const ground = h * (this.layout.horizon + 0.01);
+    // The range runs out below the meadow's top edge, so the grass covers its end
+    // rather than leaving a ledge hanging in the sky.
+    const ground = h * (this.meadowTop + 0.03);
+    // The range rises out of the meadow over the whole width of the headline column, so
+    // it is still low where the text and buttons are and reaches full height past them.
+    const textRight = this.heroTextCss.right / this.k;
+    const rampEnd = Math.max(textRight, L + span * 0.3);
     const taper = (x: number, y: number) => {
       if (L <= 0) return y;
-      const t = clamp01((x - L) / (span * 0.3));
+      const t = clamp01((x - L) / Math.max(1, rampEnd - L));
       return ground + (y - ground) * (t * t * (3 - 2 * t));
     };
 

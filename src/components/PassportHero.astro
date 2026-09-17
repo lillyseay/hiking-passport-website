@@ -147,11 +147,14 @@ const themes = [
   // On wide screens the mountains end at the left edge of the second button, so they
   // never stand behind the headline or its buttons
   const actions = hero.querySelector<HTMLElement>(".hero-actions")!;
+  const textCol = hero.querySelector<HTMLElement>(".hero-text")!;
   const measureText = () => {
     const buttons = [...actions.children];
     const edge = (buttons[1] ?? buttons[0])?.getBoundingClientRect().left ?? 0;
     const stage = canvas.getBoundingClientRect();
+    const col = textCol.getBoundingClientRect();
     scene.setSkylineLeft(edge - stage.left);
+    scene.setHeroText(col.right - stage.left + 16, col.bottom - stage.top);
   };
   measureText();
   new ResizeObserver(measureText).observe(hero);
