@@ -18,6 +18,8 @@ import SlidersHorizontal from "@lucide/astro/icons/sliders-horizontal";
 import BatteryLow from "@lucide/astro/icons/battery-low";
 import Timer from "@lucide/astro/icons/timer";
 import Mountain from "@lucide/astro/icons/mountain";
+import ChevronLeft from "@lucide/astro/icons/chevron-left";
+import ChevronRight from "@lucide/astro/icons/chevron-right";
 import {
   site,
   steps,
@@ -94,22 +96,59 @@ const parks = [
         <h2>Take a look <em>inside</em></h2>
       </div>
     </div>
-    <ul class="shot-rail reveal" tabindex="0" aria-label="App screenshots">
-      {
-        shots.map((s) => (
-          <li class="tilt">
-            <img
-              src={`${base}${s.image}`}
-              alt={s.alt}
-              loading="lazy"
-              width="591"
-              height="1280"
-            />
-          </li>
-        ))
-      }
-    </ul>
-    <p class="rail-hint reveal" aria-hidden="true">Scroll the trail →</p>
+    <div
+      class="shots reveal"
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="App screenshots"
+    >
+      <div class="shots-stage">
+        {
+          shots.map((s, i) => (
+            <figure
+              class="shot"
+              data-index={i}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${i + 1} of ${shots.length}`}
+            >
+              <img
+                src={`${base}${s.image}`}
+                alt={s.alt}
+                loading="eager"
+                width="591"
+                height="1280"
+                draggable="false"
+              />
+            </figure>
+          ))
+        }
+      </div>
+      <div class="shots-controls">
+        <button
+          class="shots-arrow"
+          data-dir="-1"
+          aria-label="Previous screenshot"
+        >
+          <ChevronLeft aria-hidden="true" />
+        </button>
+        <div class="shots-dots">
+          {
+            shots.map((s, i) => (
+              <button
+                class="shots-dot"
+                data-go={i}
+                aria-label={`Show screenshot ${i + 1}: ${s.alt.split(". ")[0]}`}
+              />
+            ))
+          }
+        </div>
+        <button class="shots-arrow" data-dir="1" aria-label="Next screenshot">
+          <ChevronRight aria-hidden="true" />
+        </button>
+      </div>
+      <p class="shots-caption" aria-live="polite"></p>
+    </div>
   </section>
 
   <!-- Plan -->
@@ -191,7 +230,7 @@ const parks = [
         <p class="eyebrow">
           <Palette class="eyebrow-icon" aria-hidden="true" />Passport themes
         </p>
-        <h2>Make it <em>yours</em></h2>
+        <h2>Custom passport <em>themes</em></h2>
         <p class="sub">
           Pick one and the passport up top changes with it, along with this
           page. In the app it dresses your widgets, your watch and your Home
@@ -259,7 +298,7 @@ const parks = [
   </section>
 
   <!-- Made to stay yours -->
-  <section id="yours" class="yours topo">
+  <section id="yours" class="yours">
     <div class="wrap">
       <div class="section-head reveal">
         <p class="eyebrow">
@@ -387,4 +426,104 @@ const parks = [
       </div>
     </div>
   </section>
+  <script>
+    // Screenshots scrub through on their own, one at a time, with the current one
+    // centered. Arrows, dots, keys, and a swipe all move it, and it holds still
+    // while it is being hovered, focused, or scrolled out of view.
+    const root = document.querySelector<HTMLElement>(".shots");
+    if (root) {
+      const slides = [...root.querySelectorAll<HTMLElement>(".shot")];
+      const dots = [...root.querySelectorAll<HTMLButtonElement>(".shots-dot")];
+      const caption = root.querySelector<HTMLElement>(".shots-caption")!;
+      const n = slides.length;
+      const reduce = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      let active = 0;
+      let timer = 0;
+      let hovered = false;
+      let focused = false;
+      let visible = false;
+
+      const render = (announce = false) => {
+        slides.forEach((el, i) => {
+          let off = i - active;
+          if (off > n / 2) off -= n;
+          if (off < -n / 2) off += n;
+          el.style.setProperty("--off", String(off));
+          el.style.setProperty("--abs", String(Math.abs(off)));
+          el.classList.toggle("is-active", off === 0);
+          el.classList.toggle("is-hidden", Math.abs(off) > 2);
+          el.setAttribute("aria-hidden", String(off !== 0));
+        });
+        dots.forEach((d, i) =>
+          d.setAttribute("aria-current", String(i === active)),
+        );
+        const text = slides[active].querySelector("img")!.alt.split(". ")[0];
+        caption.setAttribute("aria-live", announce ? "polite" : "off");
+        caption.textContent = text;
+      };
+
+      const go = (i: number, announce = false) => {
+        active = (i + n) % n;
+        render(announce);
+        schedule();
+      };
+
+      const schedule = () => {
+        clearTimeout(timer);
+        if (reduce || hovered || focused || !visible) return;
+        timer = window.setTimeout(() => go(active + 1), 3200);
+      };
+
+      root
+        .querySelectorAll<HTMLButtonElement>(".shots-arrow")
+        .forEach((b) =>
+          b.addEventListener("click", () =>
+            go(active + Number(b.dataset.dir), true),
+          ),
+        );
+      dots.forEach((d) =>
+        d.addEventListener("click", () => go(Number(d.dataset.go), true)),
+      );
+      slides.forEach((el, i) =>
+        el.addEventListener("click", () => {
+          if (i !== active) go(i, true);
+        }),
+      );
+      root.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") go(active + 1, true);
+        if (e.key === "ArrowLeft") go(active - 1, true);
+      });
+      root.addEventListener("mouseenter", () => ((hovered = true), schedule()));
+      root.addEventListener(
+        "mouseleave",
+        () => ((hovered = false), schedule()),
+      );
+      root.addEventListener("focusin", () => ((focused = true), schedule()));
+      root.addEventListener("focusout", () => ((focused = false), schedule()));
+
+      let startX = 0;
+      const stage = root.querySelector<HTMLElement>(".shots-stage")!;
+      stage.addEventListener("pointerdown", (e) => (startX = e.clientX));
+      stage.addEventListener("pointerup", (e) => {
+        const dx = e.clientX - startX;
+        if (Math.abs(dx) > 40) go(active + (dx < 0 ? 1 : -1), true);
+      });
+
+      new IntersectionObserver(
+        ([e]) => {
+          visible = e.isIntersecting;
+          schedule();
+        },
+        { threshold: 0.4 },
+      ).observe(root);
+      document.addEventListener("visibilitychange", () => {
+        visible = document.visibilityState === "visible" && visible;
+        schedule();
+      });
+
+      render();
+    }
+  </script>
 </Layout>

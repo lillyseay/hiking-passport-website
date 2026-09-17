@@ -967,34 +967,46 @@ section[id] {
   padding-bottom: 4rem;
 }
 
-.shot-rail {
-  list-style: none;
-  margin: 0;
-  display: flex;
-  gap: 1.25rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 1rem max(1.25rem, calc((100vw - var(--container)) / 2)) 2.5rem;
-  scroll-padding-inline: max(1.25rem, calc((100vw - var(--container)) / 2));
-  scrollbar-width: thin;
+/* An auto-advancing carousel: the current screenshot centered and full size, its
+   neighbors stepping back to either side */
+.shots {
+  --shot-w: clamp(13rem, 26vw, 17rem);
 }
 
-.shot-rail li {
-  flex: none;
-  width: clamp(13rem, 24vw, 16.5rem);
-  scroll-snap-align: start;
-  transition: transform 0.5s var(--ease-out);
+.shots-stage {
+  position: relative;
+  height: calc(var(--shot-w) * 2.166 + 2rem);
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
 }
 
-.shot-rail li:nth-child(odd) {
-  transform: translateY(1.25rem);
+.shot {
+  position: absolute;
+  left: 50%;
+  top: 1rem;
+  width: var(--shot-w);
+  margin: 0 0 0 calc(var(--shot-w) / -2);
+  transform: translateX(calc(var(--off) * 78%))
+    scale(calc(1 - var(--abs) * 0.13));
+  opacity: calc(1 - var(--abs) * 0.32);
+  z-index: calc(10 - var(--abs));
+  transition:
+    transform 0.7s var(--ease-out),
+    opacity 0.7s var(--ease-out);
+  cursor: pointer;
 }
 
-.shot-rail li:hover {
-  transform: translateY(-0.4rem) rotate(-1deg);
+.shot.is-active {
+  cursor: default;
 }
 
-.shot-rail img {
+.shot.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.shot img {
   display: block;
   width: 100%;
   height: auto;
@@ -1002,11 +1014,86 @@ section[id] {
   box-shadow: var(--shadow-float);
 }
 
-.rail-hint {
+.shots-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.shots-arrow {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition:
+    transform 0.3s var(--ease-out),
+    background 0.3s;
+}
+
+.shots-arrow:hover {
+  transform: translateY(-2px);
+  background: var(--accent-soft);
+}
+
+.shots-arrow svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.shots-dots {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.shots-dot {
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.shots-dot::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 100px;
+  background: color-mix(in srgb, var(--ink) 22%, transparent);
+  transition:
+    width 0.4s var(--ease-out),
+    background 0.3s;
+}
+
+.shots-dot[aria-current="true"]::before {
+  width: 1.4rem;
+  background: var(--accent);
+}
+
+.shots-caption {
+  margin: 0.9rem 0 0;
   text-align: center;
-  font-size: 0.85rem;
-  color: var(--muted);
-  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--ink);
+  min-height: 1.6em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shot {
+    transition: none;
+  }
 }
 
 /* ---------- Plan ---------- */
@@ -1397,7 +1484,29 @@ section[id] {
 }
 
 .notice {
-  border-top: 6px solid var(--forest);
+  border-top: 6px solid var(--tan);
+}
+
+/* Made to stay yours: a solid forest-green band from the palette, with sand as the
+   accent so the highlighted words and icons sit well on it */
+.yours {
+  background: var(--forest);
+  --yours-ink: #f5efe1;
+  --yours-accent: #e6cc9e;
+}
+
+.yours .section-head h2 {
+  color: var(--yours-ink);
+}
+
+.yours .section-head h2 em {
+  color: var(--yours-accent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10'%3E%3Cpath d='M2 6 Q30 1 60 5 T118 4' stroke='%23e6cc9e' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-dasharray='6 5'/%3E%3C/svg%3E");
+}
+
+.yours .eyebrow,
+.yours .eyebrow-icon {
+  color: var(--yours-accent);
 }
 
 .notice-icon {
