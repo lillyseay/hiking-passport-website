@@ -1348,13 +1348,20 @@ section[id] {
   transition: background 0.6s;
 }
 
+/* Five themes, centered, and centered again on whatever fits per row when they wrap */
 .park-grid {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.9rem;
+}
+
+.park-grid li {
+  width: 10rem;
+  max-width: calc(50% - 0.45rem);
 }
 
 .park {
@@ -1428,18 +1435,6 @@ section[id] {
 .park-tag.pro {
   background: var(--accent);
   color: var(--on-accent);
-}
-
-@media (max-width: 1000px) {
-  .park-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 560px) {
-  .park-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 /* ---------- Ranger station ---------- */
