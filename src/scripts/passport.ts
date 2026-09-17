@@ -1276,7 +1276,49 @@ export class PassportScene {
   }
 
   private get meadowTop() {
-    return this.layout.horizon - 0.012;
+    // The grass starts where the tops of the trees used to reach: with trees off every
+    // theme but Redwood, the old band between grass and rock was empty sky.
+    return this.layout.horizon + 0.018;
+  }
+
+  /** How far the meadow's crests stand proud of its mean top edge. */
+  private static readonly meadowCrest = 4;
+
+  /**
+   * The meadow's top edge: a shallow wave rather than a ruled line, four alternating
+   * crests and hollows across the width, closed down to `bottom` for filling.
+   */
+  private meadowEdge(top: number, bottom: number) {
+    const control = PassportScene.meadowCrest * 2;
+    const left = -10,
+      right = this.w + 10,
+      steps = 4;
+    const path = new Path2D();
+    path.moveTo(left, top);
+    for (let i = 0; i < steps; i++) {
+      const x = left + ((right - left) * i) / steps;
+      const nextX = left + ((right - left) * (i + 1)) / steps;
+      const dir = i % 2 === 0 ? -1 : 1;
+      path.quadraticCurveTo((x + nextX) / 2, top + control * dir, nextX, top);
+    }
+    path.lineTo(right, bottom);
+    path.lineTo(left, bottom);
+    path.closePath();
+    return path;
+  }
+
+  /** Where that edge sits at a given x, so trees stand on the curve. */
+  private meadowEdgeY(x: number, top: number) {
+    const control = PassportScene.meadowCrest * 2;
+    const left = -10,
+      right = this.w + 10,
+      steps = 4;
+    const span = (right - left) / steps;
+    const i = Math.min(steps - 1, Math.max(0, Math.floor((x - left) / span)));
+    const t = clamp01((x - (left + span * i)) / span);
+    const dir = i % 2 === 0 ? -1 : 1;
+    // A quadratic with both ends at `top`: y = top + 2t(1-t)·d
+    return top + 2 * t * (1 - t) * control * dir;
   }
   private meadowY(y: number) {
     const top = this.meadowTop;
@@ -2169,12 +2211,13 @@ export class PassportScene {
     g.addColorStop(0.5, css(p.bands[1]));
     g.addColorStop(1, css(p.bands[2]));
     c.fillStyle = g;
-    c.fillRect(-10, top, w + 20, h - top + 20);
+    c.fill(this.meadowEdge(top, h + 20));
+    this.drawMeadowRelief(c, p, top);
 
     // Trees on Redwood only, as in the app: the recoloured pine sat so close to each
     // theme's own meadow green that the row read as texture rather than as a treeline.
     if (this.theme.id === "redwood") {
-      this.drawTreeline(c, p, h * (this.layout.horizon + 0.004));
+      this.drawTreeline(c, p, top);
     }
 
     const spine = this.spine();
@@ -2246,11 +2289,76 @@ export class PassportScene {
     c.drawImage(cv, x - wd / 2, groundY - height, wd, height);
   }
 
-  private drawTreeline(
+  /**
+   * Rises and hollows in the meadow, from light alone. Nothing is added to the scene:
+   * a haze settles along the far edge so the grass by the skyline reads as distance,
+   * broad pools of sun and shade make the ground roll instead of lying flat, and the
+   * sides fall away so the middle reads as the crown of a rise. Every wash is painted
+   * in the meadow's own lightest and deepest greens, so a hollow is grass in shade
+   * rather than a grey smudge.
+   */
+  private drawMeadowRelief(
     c: CanvasRenderingContext2D,
     p: Palette,
-    groundY: number,
+    top: number,
   ) {
+    const { w, h } = this;
+    const meadowH = Math.max(1, h - top);
+    // After dark there is little light on the ground to shape
+    const strength = this.timeOfDay !== "day" ? 0.55 : 1;
+    const sun = p.bands[0];
+    const shade = p.bands[3];
+    const crest = top - PassportScene.meadowCrest - 2;
+
+    c.save();
+    c.clip(this.meadowEdge(top, h + 20));
+
+    // Distance: the far grass takes a little of the sky's haze
+    const haze = c.createLinearGradient(0, crest, 0, top + meadowH * 0.46);
+    haze.addColorStop(0, css(p.skyHorizon, 0.26 * strength));
+    haze.addColorStop(1, css(p.skyHorizon, 0));
+    c.fillStyle = haze;
+    c.fillRect(-2, crest, w + 4, meadowH * 0.46 + PassportScene.meadowCrest);
+
+    // Rises and hollows, wider than they are tall because ground foreshortens
+    const swells: [number, number, number, number, boolean, number][] = [
+      [0.2, 0.16, 0.5, 0.26, true, 0.42],
+      [0.74, 0.1, 0.42, 0.2, false, 0.3],
+      [0.56, 0.44, 0.58, 0.28, true, 0.34],
+      [0.06, 0.58, 0.44, 0.26, false, 0.34],
+      [0.9, 0.62, 0.5, 0.3, true, 0.3],
+      [0.34, 0.92, 0.62, 0.34, false, 0.38],
+    ];
+    for (const [cx, cy, rxF, ryF, lit, alpha] of swells) {
+      const rx = w * rxF,
+        ry = meadowH * ryF;
+      c.save();
+      c.translate(w * cx, top + meadowH * cy);
+      // A round gradient squashed into an ellipse by scaling the context
+      c.scale(1, ry / rx);
+      const tint = lit ? sun : shade;
+      const g = c.createRadialGradient(0, 0, 0, 0, 0, rx);
+      g.addColorStop(0, css(tint, alpha * strength));
+      g.addColorStop(1, css(tint, 0));
+      c.fillStyle = g;
+      c.beginPath();
+      c.arc(0, 0, rx, 0, Math.PI * 2);
+      c.fill();
+      c.restore();
+    }
+
+    // The ground falls away at the edges, so the eye reads the middle as high
+    const sides = c.createLinearGradient(0, crest, w, crest);
+    sides.addColorStop(0, css(shade, 0.26 * strength));
+    sides.addColorStop(0.26, css(shade, 0));
+    sides.addColorStop(0.74, css(shade, 0));
+    sides.addColorStop(1, css(shade, 0.26 * strength));
+    c.fillStyle = sides;
+    c.fillRect(0, crest, w, h - crest + 20);
+    c.restore();
+  }
+
+  private drawTreeline(c: CanvasRenderingContext2D, p: Palette, top: number) {
     const { w } = this;
     const redwood = this.theme.id === "redwood" && !!this.images.redwood;
     const gap = this.treelineGap;
@@ -2293,7 +2401,8 @@ export class PassportScene {
       const cv = this.sprite(key, nominal, tint);
       for (let x = -6; x < w + 10; x += r(rank.step[0], rank.step[1])) {
         const sc = r(rank.scale[0], rank.scale[1]);
-        const baseY = groundY - rank.lift + r(-2, 2);
+        // Each tree stands on the meadow's wavy edge, not on a ruled line
+        const baseY = this.meadowEdgeY(x, top) - rank.lift + r(-2, 2);
         if (Math.abs(x - w * 0.5) <= gap) continue;
         const height = (redwood ? 58 : 60) * sc;
         c.fillStyle = `rgba(0,0,0,${dim ? 0.06 : 0.1})`;
