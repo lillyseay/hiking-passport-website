@@ -79,34 +79,50 @@ export const steps = [
 export const shots = [
   {
     image: "/shots/01-goal-hikes.jpg",
+    blurb:
+      "Every hike you're chasing becomes a mountain on your passport, with milestone signs up the trail.",
     alt: "Track your goal hikes. The passport scene: a goal hike on the summit, milestone signs along a trail, a tent and a buddy where the boot prints end.",
   },
   {
     image: "/shots/02-stamp-the-summit.jpg",
+    blurb:
+      "Log the date, a rating, how it felt, and a photo, and a stamp lands on the peak.",
     alt: "Stamp the summit. Logging South Sister with a date, a five star rating, a mood, and a photo set as the passport stamp.",
   },
   {
     image: "/shots/03-train-your-faves.jpg",
+    blurb:
+      "Pick how you like to move, from real hikes to the stair machine, and your plan is built around it.",
     alt: "Train doing your faves. Picking how you can train: real hikes, walks and runs, treadmill, stair machine, low impact, strength, and everyday habits.",
   },
   {
     image: "/shots/04-training-for-everyone.jpg",
+    blurb:
+      "Tell it what to work around, like young kids, no car, or sore knees, and the plan bends to fit.",
     alt: "Training for everyone. The list of things the plan can work around, across family, transportation, and body and health.",
   },
   {
     image: "/shots/05-hike-with-a-buddy.jpg",
+    blurb:
+      "Choose one of six animal buddies who cheers you on and never scolds.",
     alt: "Hike with a buddy. Choosing a hiking buddy, with Aerie the bald eagle at a ninety six percent match and her story underneath.",
   },
   {
     image: "/shots/06-hiking-insights.jpg",
+    blurb:
+      "See your total climb, trail miles, and longest hike, written in your buddy's voice.",
     alt: "Hiking insights. The stats tab, with total climb, trail miles, biggest climb, and longest hike, written in your buddy's voice.",
   },
   {
     image: "/shots/07-passport-themes.jpg",
+    blurb:
+      "Dress your passport in a park theme that carries over to your widgets and watch.",
     alt: "Passport themes. Picking a theme, with the whole scene recoloured and a row of park themes underneath.",
   },
   {
     image: "/shots/08-training-widgets.jpg",
+    blurb:
+      "Keep your season, next milestone, and today's pick right on your Home Screen.",
     alt: "Training widgets. Home Screen widgets showing the season, milestones done, and the insights your buddy pulled out.",
   },
 ];

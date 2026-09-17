@@ -225,10 +225,9 @@ h2:has(em) {
   color: var(--muted);
 }
 
-/* Contour lines, like a trail map */
+/* A lightly tinted band, to set a section apart from its neighbors */
 .topo {
   background-color: var(--surface-2);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='520' viewBox='0 0 520 520'%3E%3Cg fill='none' stroke='%235c4028' stroke-opacity='0.09' stroke-width='1.4'%3E%3Cpath d='M-20 120 C80 60 160 170 260 110 S440 40 540 110'/%3E%3Cpath d='M-20 160 C90 100 170 210 270 150 S440 90 540 150'/%3E%3Cpath d='M-20 200 C100 140 180 250 280 190 S440 140 540 190'/%3E%3Cpath d='M-20 330 C60 280 150 380 240 330 S420 260 540 320'/%3E%3Cpath d='M-20 370 C70 320 160 420 250 370 S420 300 540 360'/%3E%3Cpath d='M-20 410 C80 360 170 460 260 410 S420 340 540 400'/%3E%3Cellipse cx='390' cy='255' rx='60' ry='26'/%3E%3Cellipse cx='390' cy='255' rx='34' ry='13'/%3E%3Cellipse cx='110' cy='265' rx='44' ry='18'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 /* ---------- Top bar ---------- */
@@ -1080,14 +1079,28 @@ section[id] {
   background: var(--accent);
 }
 
-.shots-caption {
-  margin: 0.9rem 0 0;
+.shots-text {
+  max-width: 30rem;
+  margin: 0.9rem auto 0;
+  padding-inline: 1.25rem;
   text-align: center;
+}
+
+.shots-caption {
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   color: var(--ink);
   min-height: 1.6em;
+}
+
+.shots-blurb {
+  margin: 0.3rem 0 0;
+  font-size: 0.98rem;
+  color: var(--muted);
+  /* Two lines held open so the page doesn't jump as the text changes */
+  min-height: 3.2em;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1484,29 +1497,7 @@ section[id] {
 }
 
 .notice {
-  border-top: 6px solid var(--tan);
-}
-
-/* Made to stay yours: a solid forest-green band from the palette, with sand as the
-   accent so the highlighted words and icons sit well on it */
-.yours {
-  background: var(--forest);
-  --yours-ink: #f5efe1;
-  --yours-accent: #e6cc9e;
-}
-
-.yours .section-head h2 {
-  color: var(--yours-ink);
-}
-
-.yours .section-head h2 em {
-  color: var(--yours-accent);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10'%3E%3Cpath d='M2 6 Q30 1 60 5 T118 4' stroke='%23e6cc9e' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-dasharray='6 5'/%3E%3C/svg%3E");
-}
-
-.yours .eyebrow,
-.yours .eyebrow-icon {
-  color: var(--yours-accent);
+  border-top: 6px solid var(--forest);
 }
 
 .notice-icon {

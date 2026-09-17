@@ -108,6 +108,7 @@ const parks = [
             <figure
               class="shot"
               data-index={i}
+              data-blurb={s.blurb}
               role="group"
               aria-roledescription="slide"
               aria-label={`${i + 1} of ${shots.length}`}
@@ -147,7 +148,10 @@ const parks = [
           <ChevronRight aria-hidden="true" />
         </button>
       </div>
-      <p class="shots-caption" aria-live="polite"></p>
+      <div class="shots-text" aria-live="polite">
+        <p class="shots-caption"></p>
+        <p class="shots-blurb"></p>
+      </div>
     </div>
   </section>
 
@@ -298,7 +302,7 @@ const parks = [
   </section>
 
   <!-- Made to stay yours -->
-  <section id="yours" class="yours">
+  <section id="yours" class="yours topo">
     <div class="wrap">
       <div class="section-head reveal">
         <p class="eyebrow">
@@ -434,7 +438,9 @@ const parks = [
     if (root) {
       const slides = [...root.querySelectorAll<HTMLElement>(".shot")];
       const dots = [...root.querySelectorAll<HTMLButtonElement>(".shots-dot")];
+      const text = root.querySelector<HTMLElement>(".shots-text")!;
       const caption = root.querySelector<HTMLElement>(".shots-caption")!;
+      const blurb = root.querySelector<HTMLElement>(".shots-blurb")!;
       const n = slides.length;
       const reduce = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
@@ -459,9 +465,11 @@ const parks = [
         dots.forEach((d, i) =>
           d.setAttribute("aria-current", String(i === active)),
         );
-        const text = slides[active].querySelector("img")!.alt.split(". ")[0];
-        caption.setAttribute("aria-live", announce ? "polite" : "off");
-        caption.textContent = text;
+        text.setAttribute("aria-live", announce ? "polite" : "off");
+        caption.textContent = slides[active]
+          .querySelector("img")!
+          .alt.split(". ")[0];
+        blurb.textContent = slides[active].dataset.blurb ?? "";
       };
 
       const go = (i: number, announce = false) => {
