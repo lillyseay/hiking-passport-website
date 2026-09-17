@@ -1623,41 +1623,6 @@ export class PassportScene {
     const unit = Math.min(w, 430);
     const count = Math.max(11, Math.round((11 * w) / unit));
 
-    // Swirls
-    const arcs = [
-      { y: 0.3, amp: 0.085, waves: 1.15, speed: 0.2, hue: 0, alpha: 0.6 },
-      { y: 0.19, amp: 0.07, waves: 1.55, speed: -0.15, hue: 2, alpha: 0.42 },
-      { y: 0.42, amp: 0.06, waves: 0.85, speed: 0.11, hue: 1, alpha: 0.34 },
-    ];
-    arcs.forEach((a, i) => {
-      const phase = time * a.speed + i * 2.1;
-      const path = new Path2D();
-      for (let x = -40, started = false; x <= w + 40; x += 6) {
-        const tt = x / Math.max(w, 1);
-        const y =
-          skyBottom * a.y +
-          h * a.amp * Math.sin(tt * Math.PI * 2 * a.waves + phase) +
-          h *
-            a.amp *
-            0.35 *
-            Math.sin(tt * Math.PI * 2 * a.waves * 2.1 - phase * 1.4);
-        started ? path.lineTo(x, y) : (path.moveTo(x, y), (started = true));
-      }
-      c.save();
-      c.globalCompositeOperation = blend;
-      // The swirls are background sweep; the standing columns carry the light
-      c.globalAlpha = a.alpha * (dark ? 1 : 0.72) * 0.45;
-      blur(h * 0.026);
-      c.lineCap = "round";
-      c.strokeStyle = css(lights[a.hue], 0.75);
-      c.lineWidth = h * 0.03;
-      c.stroke(path);
-      c.strokeStyle = css(lights[a.hue], dark ? 0.85 : 0.6);
-      c.lineWidth = h * 0.009;
-      c.stroke(path);
-      c.restore();
-    });
-
     // Pillars
     for (const pl of this.auroraPillars(count)) {
       const sway = Math.sin(time * pl.speed + pl.phase) * unit * 0.03;
