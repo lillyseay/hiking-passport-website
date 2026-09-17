@@ -716,6 +716,11 @@ h2:has(em) {
   display: block;
 }
 
+/* A rounded square around the picked theme, the shape of the app icon itself */
+.dock button.dock-theme {
+  border-radius: 0.95rem;
+}
+
 .dock-theme[aria-checked="true"] {
   border-color: var(--accent);
 }
