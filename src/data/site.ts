@@ -269,7 +269,7 @@ export const pricing = {
     "The passport, the scene, the six milestone signs, and your progress up the trail",
     "One goal hike per passport",
     "Summit stamps with a date, rating, mood, notes, and a photo",
-    "All six hiking buddies and the Meadow theme",
+    "All six hiking buddies and the Alpine theme",
     "Hikes, miles, and climb on the Stats tab",
   ],
   pro: [
@@ -277,7 +277,7 @@ export const pricing = {
     "Your buddy's pick for today, sized to how you've actually been training",
     "Stats insights in your buddy's voice",
     "Every hike on your list in one passport",
-    "Six more park themes for the passport, widgets, and watch",
+    "Four more park themes for the passport, widgets, and watch",
   ],
   prices: [
     {

@@ -153,7 +153,7 @@ const theme = (t: ThemeInput): Theme => ({
 export const THEMES: Theme[] = [
   theme({
     id: "default",
-    name: "Meadow",
+    name: "Alpine",
     park: null,
     sky: hex(0xd6e8f2),
     sun: hex(0xf8dfa0),
@@ -202,60 +202,24 @@ export const THEMES: Theme[] = [
     alpenglow: hex(0xf6eedc),
     meadowDeep: 0.3,
   }),
-  // Northern dusk: indigo through violet to lavender, boreal green below
+  // Voyageurs under the northern lights: violet overhead running down to lavender,
+  // with green ribbons standing up out of the horizon
   theme({
     id: "voyageurs",
     name: "Voyageurs",
-    park: "Inspired by Voyageurs",
+    park: "Inspired by Voyageurs' northern lights",
     sky: hex(0xbfc4e2),
     sun: hex(0xf6f3fa),
     ridgeFar: hex(0x9e97c6),
     ridgeNear: hex(0x7e79ac),
     ground: hex(0x9fd4a4),
     // Lighter overhead than the app: a wide sky reads far darker than a phone's
-    skyTop: mix(hex(0xb3b3e4), WHITE, 0.35),
-    skyMid: mix(hex(0xd4ceed), WHITE, 0.2),
-    skyHorizon: hex(0xf1eff9),
+    skyTop: mix(hex(0x9a93de), WHITE, 0.35),
+    skyMid: mix(hex(0xc5bcea), WHITE, 0.2),
+    skyHorizon: hex(0xefeaf8),
     meadow: hex(0x7fba88),
     accent: hex(0x5a5788),
     accentDark: hex(0xa3a0d2),
-    alpenglow: hex(0xffdcb0),
-  }),
-  // Desert sunset: slate overhead, rose through the middle, dusty mauve at the horizon
-  theme({
-    id: "saguaro",
-    name: "Saguaro",
-    park: "Inspired by Saguaro",
-    sky: hex(0xe0bfc0),
-    sun: hex(0xf0b9a8),
-    ridgeFar: hex(0xc79aa4),
-    ridgeNear: hex(0x8e5a63),
-    ground: hex(0x8c9a6b),
-    // Half as deep as the app's: the full-strength ramp is heavy across a wide sky
-    skyTop: mix(hex(0x8fa0b0), WHITE, 0.5),
-    skyMid: mix(hex(0xe5899a), WHITE, 0.5),
-    skyHorizon: mix(hex(0xbe95a2), WHITE, 0.5),
-    meadow: hex(0x8c9a6b),
-    accent: hex(0x8b4c63),
-    accentDark: hex(0xce9ca6),
-    alpenglow: hex(0xe58c87),
-  }),
-  // The northern lights: indigo overhead, teal at the horizon, ribbons that move
-  theme({
-    id: "aurora",
-    name: "Aurora",
-    park: "Inspired by the northern lights",
-    sky: hex(0xbbd9f2),
-    sun: hex(0xbff3dc),
-    ridgeFar: hex(0x7e9bc4),
-    ridgeNear: hex(0x53709b),
-    ground: hex(0x7fb894),
-    skyTop: hex(0x8fbcec),
-    skyMid: hex(0xbee4e2),
-    skyHorizon: hex(0xe9f6ee),
-    meadow: hex(0x85be7f),
-    accent: hex(0x1e7a63),
-    accentDark: hex(0x6fd8b4),
     alpenglow: hex(0xd6f7e6),
   }),
   // High desert noon: saturated blue overhead, bleached at the horizon
@@ -278,6 +242,9 @@ export const THEMES: Theme[] = [
 
 /** "SEP 17" as "Sep 17", for sentences that read the stamp's date back. */
 export const spokenDate = (d: string) => d.charAt(0) + d.slice(1).toLowerCase();
+
+/** The theme whose sky carries the northern lights. */
+export const hasLights = (t: Theme) => t.id === "voyageurs";
 
 export const themeById = (id: string | null | undefined) =>
   THEMES.find((t) => t.id === id) ?? THEMES[0];
@@ -596,7 +563,7 @@ function themed(t: Theme, night: boolean): Palette {
     base = withHue(DAY.ridgeBase, groundHue);
     pines = DAY.pines.map((c) => withHue(c, groundHue));
   }
-  const rock = t.id === "aurora" ? Rock.aurora : Rock.day;
+  const rock = hasLights(t) ? Rock.aurora : Rock.day;
   return {
     ...DAY,
     skyTop: t.skyTop,
@@ -629,7 +596,7 @@ function themed(t: Theme, night: boolean): Palette {
 
 function themedNight(t: Theme, pale: boolean, groundHue: number): Palette {
   const n = NIGHT;
-  const r = t.id === "aurora" ? Rock.auroraDark : null;
+  const r = hasLights(t) ? Rock.auroraDark : null;
   const skyHue = toHsb(t.sky)[0];
   const groundSat = pale ? -0.42 : 0;
   const pines = n.pines.map((c) =>
@@ -674,7 +641,7 @@ function paletteFor(t: Theme, time: TimeOfDay, clock: SkyClock): Palette {
         : deepened(
             themed(t, false),
             clock,
-            t.id === "aurora" ? Rock.auroraDark : Rock.dark,
+            hasLights(t) ? Rock.auroraDark : Rock.dark,
           );
     case "night":
       return isDefault ? NIGHT : themed(t, true);
@@ -1176,7 +1143,7 @@ export class PassportScene {
       animating ||= this.stampDrop < 1;
     }
 
-    const aurora = this.theme.id === "aurora";
+    const aurora = hasLights(this.theme);
     if (this.dirty) {
       this.sctx.setTransform(this.dpr * this.k, 0, 0, this.dpr * this.k, 0, 0);
       this.sctx.clearRect(0, 0, this.w, this.h);
@@ -1861,7 +1828,7 @@ export class PassportScene {
     const profiles = ridges.map((r) =>
       this.ridgeProfile(r.peakX, r.peakY, r.amplitude, r.seed, !r.mountain),
     );
-    const aurora = this.theme.id === "aurora";
+    const aurora = hasLights(this.theme);
 
     const ramp = (d: number) =>
       d < 0.5
@@ -2204,7 +2171,11 @@ export class PassportScene {
     c.fillStyle = g;
     c.fillRect(-10, top, w + 20, h - top + 20);
 
-    this.drawTreeline(c, p, h * (this.layout.horizon + 0.004));
+    // Trees on Redwood only, as in the app: the recoloured pine sat so close to each
+    // theme's own meadow green that the row read as texture rather than as a treeline.
+    if (this.theme.id === "redwood") {
+      this.drawTreeline(c, p, h * (this.layout.horizon + 0.004));
+    }
 
     const spine = this.spine();
     const drawn = easeInOut((this.reveal - 0.3) / 0.55);
@@ -2288,17 +2259,23 @@ export class PassportScene {
     const ranks = redwood
       ? [
           {
-            scale: [0.6, 0.78],
-            step: [20, 32],
-            lift: 6,
-            haze: 0.22,
+            scale: [0.43, 0.55],
+            step: [20, 33],
+            lift: 0,
+            haze: 0.24,
             seed: 611,
           },
-          { scale: [0.86, 1.14], step: [22, 36], lift: 0, haze: 0, seed: 610 },
+          { scale: [0.66, 0.86], step: [26, 42], lift: -5, haze: 0, seed: 610 },
         ]
       : [
-          { scale: [0.28, 0.4], step: [6, 10], lift: 5, haze: 0.24, seed: 611 },
-          { scale: [0.42, 0.6], step: [7, 11], lift: 0, haze: 0, seed: 610 },
+          {
+            scale: [0.24, 0.32],
+            step: [15, 25],
+            lift: 0,
+            haze: 0.26,
+            seed: 611,
+          },
+          { scale: [0.37, 0.51], step: [21, 32], lift: -5, haze: 0, seed: 610 },
         ];
     const veil =
       tod === "night" ? rgb(0.22, 0.36, 0.46) : rgb(0.18, 0.28, 0.34);
