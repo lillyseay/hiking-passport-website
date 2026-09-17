@@ -612,8 +612,10 @@ function themed(t: Theme, night: boolean): Palette {
     bands,
     treeline: pines[0],
     pines,
-    trail: pale ? mix(DAY.trail, BLACK, 0.22) : DAY.trail,
-    trailEdge: pale ? mix(DAY.trailEdge, BLACK, 0.22) : DAY.trailEdge,
+    // The same light trail in every theme. (The app tans it on a pale ground, which
+    // also caught Voyageurs and made its trail read as a different path.)
+    trail: DAY.trail,
+    trailEdge: DAY.trailEdge,
     stampInk: stampInk(t),
     stampPaper: stampPaper(t),
     goalInk: rgb(0.16, 0.2, 0.24),
