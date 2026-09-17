@@ -1022,7 +1022,6 @@ export class PassportScene {
   private raf = 0;
   private visible = true;
   private dirty = true;
-  private hasFilter: boolean;
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -1035,7 +1034,6 @@ export class PassportScene {
     this.timeMode = opts.time ?? "auto";
     this.reduceMotion = !!opts.reduceMotion;
     this.onTargets = opts.onTargets;
-    this.hasFilter = typeof this.ctx.filter === "string";
     this.reveal = this.reduceMotion ? 1 : 0;
   }
 
@@ -1617,9 +1615,24 @@ export class PassportScene {
       ? [rgb(0.38, 1, 0.67), rgb(0.36, 0.94, 0.92), rgb(0.7, 0.52, 1)]
       : [rgb(0.09, 0.74, 0.48), rgb(0.06, 0.68, 0.76), rgb(0.48, 0.33, 0.86)];
     const blend: GlobalCompositeOperation = dark ? "lighter" : "source-over";
-    const blur = (px: number) => {
-      if (this.hasFilter)
-        c.filter = `blur(${(px * this.k * q * 0.6).toFixed(2)}px)`;
+    // Soft light without ctx.filter, which Safari (and so every iPhone browser) does
+    // not support: the shape is drawn far off to the side and only its blurred
+    // shadow lands in view. The shadow takes the shape's alpha, so a gradient fill
+    // still fades, and shadowBlur works everywhere.
+    const glowFill = (
+      px: number,
+      color: string,
+      paint: (ctx: CanvasRenderingContext2D) => void,
+    ) => {
+      const OFF = 20000;
+      const scale = c.getTransform().a;
+      c.save();
+      c.shadowColor = color;
+      c.shadowBlur = px * 2 * scale;
+      c.shadowOffsetX = OFF * scale;
+      c.translate(-OFF, 0);
+      paint(c);
+      c.restore();
     };
     // One phone's width of sky, the unit the app's aurora is proportioned to
     const unit = Math.min(w, 430);
@@ -1657,9 +1670,10 @@ export class PassportScene {
       c.save();
       c.globalCompositeOperation = blend;
       c.globalAlpha = pl.alpha * glow * (dark ? 1 : 0.88);
-      blur(unit * 0.03);
-      c.fillStyle = grad;
-      c.fill(col);
+      glowFill(unit * 0.03, css(lc), (ctx) => {
+        ctx.fillStyle = grad;
+        ctx.fill(col);
+      });
       c.restore();
     }
 
@@ -1668,12 +1682,18 @@ export class PassportScene {
     c.save();
     c.globalCompositeOperation = blend;
     c.globalAlpha = (dark ? 0.42 : 0.22) * pulse;
-    blur(h * 0.02);
     const hg = c.createLinearGradient(0, skyBottom - h * 0.2, 0, skyBottom);
     hg.addColorStop(0, css(lights[0], 0));
     hg.addColorStop(1, css(lights[0]));
-    c.fillStyle = hg;
-    c.fillRect(-10, skyBottom - h * 0.2, w + 20, h * 0.22);
+    glowFill(h * 0.02, css(lights[0]), (ctx) => {
+      ctx.fillStyle = hg;
+      ctx.fillRect(
+        -10 - h * 0.1,
+        skyBottom - h * 0.2,
+        w + 20 + h * 0.2,
+        h * 0.22,
+      );
+    });
     c.restore();
 
     main.save();
