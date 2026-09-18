@@ -57,7 +57,7 @@ export const steps = [
   {
     kind: "Add your hikes",
     title: "Start from the hikes you're actually chasing",
-    body: "Type in the trail, the distance, the climb, and how many days it takes. On a device with Apple Intelligence, it can fill the stats in for you.",
+    body: "Type in the trail, the distance, the climb, and how many days it takes, straight from your guidebook or your favorite trail app.",
   },
   {
     kind: "Get a plan",
@@ -294,7 +294,7 @@ export const pricing = {
     },
   ],
   requirements:
-    "iPhone on iOS 26 or later. The watch app needs watchOS 26. Apple Intelligence features need a device that supports it; without one, you enter trail stats by hand and the plan is unchanged.",
+    "iPhone on iOS 26 or later. The watch app needs watchOS 26. Apple Intelligence writes your plan's name and your buddy's notes on devices that support it; without one, everything else works the same.",
 };
 
 // The ridgeline above the footer, built like the one on lillyseay.com: the front
