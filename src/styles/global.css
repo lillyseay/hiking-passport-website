@@ -966,6 +966,64 @@ section[id] {
   }
 }
 
+/* ---------- Story ---------- */
+.story-body,
+.story-close,
+.story-sign {
+  max-width: 40rem;
+  margin-inline: auto;
+}
+
+.story-body p {
+  font-size: 1.1rem;
+  margin: 0 0 1.1rem;
+}
+
+.story-body p:last-child {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.story-stats {
+  list-style: none;
+  padding: 0;
+  margin: 2.5rem auto;
+  max-width: 52rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1rem;
+}
+
+.story-stats li {
+  text-align: center;
+  padding: 1.5rem 1.25rem;
+}
+
+.story-stats strong {
+  display: block;
+  font-family: var(--font-display, inherit);
+  font-size: 2rem;
+  line-height: 1.1;
+  color: var(--accent-text);
+  margin-bottom: 0.4rem;
+}
+
+.story-stats span {
+  color: var(--muted);
+}
+
+.story-close {
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.story-sign {
+  text-align: center;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 1rem;
+}
+
 /* ---------- Screens ---------- */
 .screens {
   padding-bottom: 4rem;

@@ -19,12 +19,14 @@ import BatteryLow from "@lucide/astro/icons/battery-low";
 import Timer from "@lucide/astro/icons/timer";
 import Mountain from "@lucide/astro/icons/mountain";
 import MountainSnow from "@lucide/astro/icons/mountain-snow";
+import Footprints from "@lucide/astro/icons/footprints";
 import Carousel from "../components/Carousel.astro";
 import {
   site,
   steps,
   shots,
   plan,
+  story,
   buddies,
   points,
   watchShots,
@@ -85,6 +87,35 @@ const parks = [
           ))
         }
       </ol>
+    </div>
+  </section>
+
+  <!-- Why it exists -->
+  <section id="story" class="story topo">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">
+          <Footprints class="eyebrow-icon" aria-hidden="true" />Why I built it
+        </p>
+        <h2>The plan bends. <em>Your goals don't.</em></h2>
+      </div>
+      <div class="story-body reveal">
+        {story.body.map((para) => <p>{para}</p>)}
+      </div>
+      <ul class="story-stats stagger">
+        {
+          story.stats.map((st) => (
+            <li class="card">
+              <strong>{st.value}</strong>
+              <span>{st.label}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="story-close reveal">{story.close}</p>
+      <p class="story-sign reveal">
+        Lilly Seay, maker of Hiking Passport
+      </p>
     </div>
   </section>
 
@@ -192,9 +223,12 @@ const parks = [
         </p>
         <h2>Custom passport <em>themes</em></h2>
         <p class="sub">
-          Pick one and the passport up top changes with it, along with this
-          page. In the app it dresses your widgets, your watch and your Home
-          Screen icon too.
+          Each one is a national park landscape with its own colors, terrain,
+          and sky. Pick one and the passport up top changes with it, along
+          with this page. In the app the sun sits where it really is for the
+          time of day, stars and a moon come out at night, and the theme
+          dresses your widgets, your watch, and your Home Screen icon, a tiny
+          passport that opens into the full landscape.
         </p>
       </div>
       <ul class="park-grid stagger">

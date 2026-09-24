@@ -7,7 +7,7 @@ export const site = {
   url: "https://hikingpassportapp.com",
   tagline: "Train for your goal hikes",
   description:
-    "Add the hikes you're chasing and get a training plan built from what you already do. Stamp every summit. Everything stays on your iPhone, with no account and no cloud.",
+    "Train for the hikes you're chasing with a plan built from how you already move, stairs, strollers, and grocery bags included. The plan bends; your goals don't. Everything stays on your iPhone, with no account and no cloud.",
   status: "Coming soon to the App Store",
   email: "team@lillyseay.co",
   maker: { name: "Lilly Seay", url: "https://lillyseay.com" },
@@ -62,7 +62,7 @@ export const steps = [
   {
     kind: "Get a plan",
     title: "A plan built from how you already train",
-    body: "Hiking Passport uses your Apple Health data to build a training plan from the workouts you already do. It has modifications for disability and access needs, low energy, low time, parenting, and more, so everyone can hit their goal hikes.",
+    body: "Hiking Passport reads your Apple Health history and builds a plan around the ways you already move. Taking the stairs, pushing a stroller, and carrying groceries all count. It bends around disability and access needs, low energy, little time, caregiving, and more, so the goal hike stays within reach.",
   },
   {
     kind: "Train",
@@ -149,8 +149,25 @@ export const plan = {
   ],
   body: [
     "Setup asks how you can train, how many days a week, and how long a session is. Then it asks what to work around, and offers fifty-five things to tap: knees, lungs, a mobility aid, young kids, no car, shift work, a tight month, a body that is changing.",
+    "Every milestone has equivalent ways to finish it, so missing a trailhead because of weather, a ride that fell through, a flare, or a sick kid doesn't erase your progress.",
     "None of it is a barrier to the goal. It changes what the plan suggests, never whether the mountain is yours to climb.",
   ],
+};
+
+// Why the app exists, in the maker's words.
+export const story = {
+  body: [
+    "Hiking Passport started with a walking challenge: 20,000 steps a day for a month. The most I had ever walked was five miles. I ended that month on the summit of South Sister, fourteen miles and nearly 5,000 feet of climbing. Seven hours up, blistered and exhausted, summit sign in hand. I barely made it, and I wanted to come back the next year faster.",
+    "I'm disabled, with hearing loss and insomnia, so I've spent my life finding unorthodox ways to do ordinary things. My training looks different every year. In 2025, insomnia left me with just enough energy to skip a stair every time I climbed a staircase. That alone cut an hour and eighteen minutes off my summit time.",
+    "That's when it clicked. I didn't need a conventional training plan. I needed one that could adapt to my life.",
+  ],
+  stats: [
+    { value: "1 in 4", label: "U.S. adults has a disability" },
+    { value: "63 million", label: "Americans are family caregivers" },
+    { value: "1 hr 18 min", label: "off my summit time, one skipped stair at a time" },
+  ],
+  close:
+    "For millions of people, hiking is limited by time, energy, transportation, caregiving, or access, not motivation. Hiking Passport turns those barriers into accommodations.",
 };
 
 export const buddies = [
@@ -223,7 +240,7 @@ export const points = [
   {
     icon: "eye",
     title: "Accessibility first",
-    body: "The whole scene is described for VoiceOver, signs thin out instead of colliding as text grows, and the opening animation skips itself when Reduce Motion is on.",
+    body: "The whole landscape is described for VoiceOver, signs thin out instead of colliding as Dynamic Type grows, and the opening animation skips itself when Reduce Motion is on.",
   },
 ];
 
