@@ -68,8 +68,7 @@ const parks = [
         </p>
         <h2>Four signs to the <em>summit</em></h2>
         <p class="sub">
-          A passport for your hiking season, from the first goal to the last
-          stamp
+          A passport for your hiking season, from the first goal to the last stamp.
         </p>
       </div>
       <ol class="trail-steps stagger">
@@ -112,13 +111,11 @@ const parks = [
       </ul>
       <div class="story-rows">
         {
-          [
-            { photo: story.photos[0], paras: story.body.slice(0, 1) },
-            { photo: story.photos[1], paras: story.body.slice(1) },
-          ].map((row, i) => (
+          story.rows.map((row, i) => (
             <div class={`story-row reveal${i % 2 ? " flip" : ""}`}>
               <div class="story-body">
-                {row.paras.map((para) => <p>{para}</p>)}
+                <blockquote class="story-quote">“{row.quote}”</blockquote>
+                <p>{row.text}</p>
               </div>
               <figure class="story-photo">
                 <img
@@ -137,6 +134,7 @@ const parks = [
           ))
         }
       </div>
+
       <div class="story-callout reveal">
         <p class="story-close">{story.close}</p>
         <p class="story-sign">Lilly Seay, founder of Hiking Passport</p>
@@ -226,9 +224,7 @@ const parks = [
         </p>
         <h2>Pick a hiking <em>buddy</em></h2>
         <p class="sub">
-          Six forest animals, each from a community that gets told the trail is
-          not for them. They're friends who hike, not trainers or doctors, and
-          they never scold.
+          Six forest animals from communities often told the trail isn't for them, and none of them ever scolds.
         </p>
       </div>
       <ul class="buddy-grid stagger">
@@ -258,12 +254,7 @@ const parks = [
         </p>
         <h2>Custom passport <em>themes</em></h2>
         <p class="sub">
-          Each one is a national park landscape with its own colors, terrain,
-          and sky. Pick one and the passport up top changes with it, along
-          with this page. In the app the sun sits where it really is for the
-          time of day, stars and a moon come out at night, and the theme
-          dresses your widgets, your watch, and your Home Screen icon, a tiny
-          passport that opens into the full landscape.
+          Each national park theme follows your clock from sunrise to starlight and carries over to your widgets, watch, and app icon.
         </p>
       </div>
       <ul class="park-grid stagger">
@@ -306,9 +297,7 @@ const parks = [
         </p>
         <h2>Your passport, <em>on your wrist</em></h2>
         <p class="sub">
-          The watch keeps its own copy, so it opens with your passport whether
-          or not your phone came along. Cross a milestone off or stamp a summit
-          from there.
+          The watch keeps its own copy of your passport, so you can cross off a milestone or stamp a summit without your phone.
         </p>
       </div>
     </div>

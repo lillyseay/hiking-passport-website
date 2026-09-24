@@ -148,34 +148,36 @@ export const plan = {
     { name: "Short on time", body: "For the days that give you less." },
   ],
   checks: [
-    "Pick how you train, how many days a week, and how long a session runs",
-    "Tap what to work around from fifty-five options: knees, lungs, a mobility aid, young kids, no car, shift work, a tight month, a changing body",
-    "Every milestone comes with equivalent ways to finish it",
-    "Miss a trailhead to weather, a ride that fell through, a flare, or a sick kid, and your progress stays",
+    "Choose how, how often, and how long you train",
+    "Tap from 55 things to work around, like knees, kids, or no car",
+    "Finish every milestone more than one way",
+    "Miss a trailhead without losing your progress",
   ],
-  close:
-    "None of it is a barrier to the goal. It changes what the plan suggests, never whether the mountain is yours to climb.",
+  close: "The plan changes; the mountain is still yours to climb.",
 };
 
 // Why the app exists, in the maker's words.
 export const story = {
-  body: [
-    "Hiking Passport started with a walking challenge: 20,000 steps a day for a month. The most I had ever walked was five miles. I ended that month on the summit of South Sister, fourteen miles and nearly 5,000 feet of climbing. Seven hours up, blistered and exhausted, summit sign in hand. I barely made it, and I wanted to come back the next year faster.",
-    "I'm disabled, with hearing loss and insomnia, so I've spent my life finding unorthodox ways to do ordinary things. My training looks different every year. In 2025, insomnia left me with just enough energy to skip a stair every time I climbed a staircase. That alone cut an hour and eighteen minutes off my summit time.",
-    "That's when it clicked. I didn't need a conventional training plan. I needed one that could adapt to my life.",
-  ],
-  photos: [
+  rows: [
     {
-      image: "/story/south-sister.jpg",
-      cap: "South Sister, 10,358 ft",
-      note: "The summit, and the sign I carried up",
-      alt: "Lilly on the red volcanic rock at the summit of South Sister, holding a cardboard sign reading South Sister 10,358 ft, with Oregon's Cascades hazy blue behind.",
+      quote: "Seven hours up, blistered and exhausted, summit sign in hand.",
+      text: "A month of 20,000 steps a day took me from never walking more than five miles to the top of South Sister, and I wanted to come back faster.",
+      photo: {
+        image: "/story/south-sister.jpg",
+        cap: "South Sister, 10,358 ft",
+        note: "The summit, and the sign I carried up",
+        alt: "Lilly on the red volcanic rock at the summit of South Sister, holding a cardboard sign reading South Sister 10,358 ft, with Oregon's Cascades hazy blue behind.",
+      },
     },
     {
-      image: "/story/lauterbrunnen.jpg",
-      cap: "Lauterbrunnen, Switzerland",
-      note: "The meadow the passport is drawn from",
-      alt: "Lilly smiling in a green meadow in Lauterbrunnen, with sheer cliffs on both sides and snowy Alps at the end of the valley.",
+      quote: "I didn't need a conventional training plan. I needed one that could adapt to my life.",
+      text: "I'm disabled, with hearing loss and insomnia, and skipping a stair on every staircase cut an hour and eighteen minutes off my summit time.",
+      photo: {
+        image: "/story/lauterbrunnen.jpg",
+        cap: "Lauterbrunnen, Switzerland",
+        note: "The meadow the passport is drawn from",
+        alt: "Lilly smiling in a green meadow in Lauterbrunnen, with sheer cliffs on both sides and snowy Alps at the end of the valley.",
+      },
     },
   ],
   stats: [
