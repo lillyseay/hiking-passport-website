@@ -975,7 +975,7 @@ section[id] {
 
 /* Paragraphs beside the photos, the photo switching sides each row */
 .story-rows {
-  max-width: 56rem;
+  max-width: 50rem;
   margin: 0 auto;
   display: grid;
   gap: 3rem;
@@ -983,8 +983,8 @@ section[id] {
 
 .story-row {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-  gap: 2.5rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 15rem);
+  gap: 3rem;
   align-items: center;
 }
 
@@ -993,7 +993,7 @@ section[id] {
 }
 
 .story-row.flip {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
 }
 
 .story-body p {
@@ -1052,7 +1052,7 @@ section[id] {
   }
 
   .story-photo {
-    max-width: 20rem;
+    max-width: 15rem;
     margin-inline: auto;
   }
 }
@@ -1060,7 +1060,7 @@ section[id] {
 .story-stats {
   list-style: none;
   padding: 0;
-  margin: 2.5rem auto;
+  margin: 0 auto 4rem;
   max-width: 52rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));

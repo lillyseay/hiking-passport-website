@@ -99,6 +99,16 @@ const parks = [
         </p>
         <h2>The plan bends. <em>Your goals don't.</em></h2>
       </div>
+      <ul class="story-stats stagger">
+        {
+          story.stats.map((st) => (
+            <li class="card">
+              <strong>{st.value}</strong>
+              <span>{st.label}</span>
+            </li>
+          ))
+        }
+      </ul>
       <div class="story-rows">
         {
           [
@@ -126,16 +136,6 @@ const parks = [
           ))
         }
       </div>
-      <ul class="story-stats stagger">
-        {
-          story.stats.map((st) => (
-            <li class="card">
-              <strong>{st.value}</strong>
-              <span>{st.label}</span>
-            </li>
-          ))
-        }
-      </ul>
       <p class="story-close reveal">{story.close}</p>
       <p class="story-sign reveal">
         Lilly Seay, maker of Hiking Passport
