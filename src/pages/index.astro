@@ -99,25 +99,30 @@ const parks = [
         </p>
         <h2>The plan bends. <em>Your goals don't.</em></h2>
       </div>
-      <div class="story-body reveal">
-        {story.body.map((para) => <p>{para}</p>)}
-      </div>
-      <div class="story-photos stagger">
+      <div class="story-rows">
         {
-          story.photos.map((ph) => (
-            <figure>
-              <img
-                src={`${base}${ph.image}`}
-                alt={ph.alt}
-                width="1050"
-                height="1400"
-                loading="lazy"
-              />
-              <figcaption>
-                <strong>{ph.cap}</strong>
-                <span>{ph.note}</span>
-              </figcaption>
-            </figure>
+          [
+            { photo: story.photos[0], paras: story.body.slice(0, 1) },
+            { photo: story.photos[1], paras: story.body.slice(1) },
+          ].map((row, i) => (
+            <div class={`story-row reveal${i % 2 ? " flip" : ""}`}>
+              <div class="story-body">
+                {row.paras.map((para) => <p>{para}</p>)}
+              </div>
+              <figure class="story-photo">
+                <img
+                  src={`${base}${row.photo.image}`}
+                  alt={row.photo.alt}
+                  width="1050"
+                  height="1400"
+                  loading="lazy"
+                />
+                <figcaption>
+                  <strong>{row.photo.cap}</strong>
+                  <span>{row.photo.note}</span>
+                </figcaption>
+              </figure>
+            </div>
           ))
         }
       </div>

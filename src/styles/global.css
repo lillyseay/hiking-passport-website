@@ -967,11 +967,33 @@ section[id] {
 }
 
 /* ---------- Story ---------- */
-.story-body,
 .story-close,
 .story-sign {
   max-width: 40rem;
   margin-inline: auto;
+}
+
+/* Paragraphs beside the photos, the photo switching sides each row */
+.story-rows {
+  max-width: 56rem;
+  margin: 0 auto;
+  display: grid;
+  gap: 3rem;
+}
+
+.story-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.story-row.flip .story-photo {
+  order: -1;
+}
+
+.story-row.flip {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
 }
 
 .story-body p {
@@ -980,23 +1002,19 @@ section[id] {
 }
 
 .story-body p:last-child {
+  margin-bottom: 0;
+}
+
+.story-row:last-child .story-body p:last-child {
   font-weight: 600;
   color: var(--ink);
 }
 
-.story-photos {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-  max-width: 44rem;
-  margin: 2.5rem auto 0;
-}
-
-.story-photos figure {
+.story-photo {
   margin: 0;
 }
 
-.story-photos img {
+.story-photo img {
   display: block;
   width: 100%;
   height: auto;
@@ -1006,20 +1024,37 @@ section[id] {
   box-shadow: var(--shadow-card);
 }
 
-.story-photos figcaption {
+.story-photo figcaption {
   margin-top: 0.75rem;
   text-align: center;
   line-height: 1.35;
 }
 
-.story-photos figcaption strong {
+.story-photo figcaption strong {
   display: block;
   color: var(--ink);
 }
 
-.story-photos figcaption span {
+.story-photo figcaption span {
   color: var(--muted);
   font-size: 0.95rem;
+}
+
+@media (max-width: 720px) {
+  .story-row,
+  .story-row.flip {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .story-row.flip .story-photo {
+    order: 0;
+  }
+
+  .story-photo {
+    max-width: 20rem;
+    margin-inline: auto;
+  }
 }
 
 .story-stats {
