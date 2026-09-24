@@ -161,6 +161,20 @@ export const story = {
     "I'm disabled, with hearing loss and insomnia, so I've spent my life finding unorthodox ways to do ordinary things. My training looks different every year. In 2025, insomnia left me with just enough energy to skip a stair every time I climbed a staircase. That alone cut an hour and eighteen minutes off my summit time.",
     "That's when it clicked. I didn't need a conventional training plan. I needed one that could adapt to my life.",
   ],
+  photos: [
+    {
+      image: "/story/south-sister.jpg",
+      cap: "South Sister, 10,358 ft",
+      note: "The summit, and the sign I carried up",
+      alt: "Lilly on the red volcanic rock at the summit of South Sister, holding a cardboard sign reading South Sister 10,358 ft, with Oregon's Cascades hazy blue behind.",
+    },
+    {
+      image: "/story/lauterbrunnen.jpg",
+      cap: "Lauterbrunnen, Switzerland",
+      note: "The meadow the passport is drawn from",
+      alt: "Lilly smiling in a green meadow in Lauterbrunnen, with sheer cliffs on both sides and snowy Alps at the end of the valley.",
+    },
+  ],
   stats: [
     { value: "1 in 4", label: "U.S. adults has a disability" },
     { value: "63 million", label: "Americans are family caregivers" },

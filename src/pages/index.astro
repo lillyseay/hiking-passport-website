@@ -102,6 +102,25 @@ const parks = [
       <div class="story-body reveal">
         {story.body.map((para) => <p>{para}</p>)}
       </div>
+      <div class="story-photos stagger">
+        {
+          story.photos.map((ph) => (
+            <figure>
+              <img
+                src={`${base}${ph.image}`}
+                alt={ph.alt}
+                width="1050"
+                height="1400"
+                loading="lazy"
+              />
+              <figcaption>
+                <strong>{ph.cap}</strong>
+                <span>{ph.note}</span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
       <ul class="story-stats stagger">
         {
           story.stats.map((st) => (
