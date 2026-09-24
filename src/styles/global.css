@@ -967,10 +967,14 @@ section[id] {
 }
 
 /* ---------- Story ---------- */
-.story-close,
-.story-sign {
-  max-width: 40rem;
-  margin-inline: auto;
+/* The closing line, boxed so it stands apart from the story */
+.story-callout {
+  max-width: 44rem;
+  margin: 4rem auto 0;
+  padding: 2rem 2.25rem;
+  border: 2px solid var(--accent);
+  border-radius: 24px;
+  background: var(--card);
 }
 
 /* Paragraphs beside the photos, the photo switching sides each row */
@@ -1086,15 +1090,18 @@ section[id] {
 }
 
 .story-close {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--ink);
   text-align: center;
+  margin: 0;
 }
 
 .story-sign {
   text-align: center;
   color: var(--muted);
   font-style: italic;
-  margin-top: 1rem;
+  margin: 1rem 0 0;
 }
 
 /* ---------- Screens ---------- */
