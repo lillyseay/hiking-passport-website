@@ -20,6 +20,7 @@ import Timer from "@lucide/astro/icons/timer";
 import Mountain from "@lucide/astro/icons/mountain";
 import MountainSnow from "@lucide/astro/icons/mountain-snow";
 import Footprints from "@lucide/astro/icons/footprints";
+import CircleCheck from "@lucide/astro/icons/circle-check";
 import Carousel from "../components/Carousel.astro";
 import {
   site,
@@ -174,7 +175,17 @@ const parks = [
           <Route class="eyebrow-icon" aria-hidden="true" />Training plan
         </p>
         <h2>More than one <em>way up</em></h2>
-        {plan.body.map((para) => <p class="plan-copy">{para}</p>)}
+        <ul class="plan-checks">
+          {
+            plan.checks.map((c) => (
+              <li>
+                <CircleCheck class="plan-check-icon" aria-hidden="true" />
+                {c}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="plan-copy">{plan.close}</p>
         <ul class="ways" aria-label="Ways to train">
           {plan.ways.map((w) => <li>{w}</li>)}
         </ul>

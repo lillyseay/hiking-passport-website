@@ -147,11 +147,14 @@ export const plan = {
     { name: "Low energy", body: "For the days that ask for less." },
     { name: "Short on time", body: "For the days that give you less." },
   ],
-  body: [
-    "Setup asks how you can train, how many days a week, and how long a session is. Then it asks what to work around, and offers fifty-five things to tap: knees, lungs, a mobility aid, young kids, no car, shift work, a tight month, a body that is changing.",
-    "Every milestone has equivalent ways to finish it, so missing a trailhead because of weather, a ride that fell through, a flare, or a sick kid doesn't erase your progress.",
-    "None of it is a barrier to the goal. It changes what the plan suggests, never whether the mountain is yours to climb.",
+  checks: [
+    "Pick how you train, how many days a week, and how long a session runs",
+    "Tap what to work around from fifty-five options: knees, lungs, a mobility aid, young kids, no car, shift work, a tight month, a changing body",
+    "Every milestone comes with equivalent ways to finish it",
+    "Miss a trailhead to weather, a ride that fell through, a flare, or a sick kid, and your progress stays",
   ],
+  close:
+    "None of it is a barrier to the goal. It changes what the plan suggests, never whether the mountain is yours to climb.",
 };
 
 // Why the app exists, in the maker's words.

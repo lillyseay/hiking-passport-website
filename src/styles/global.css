@@ -1277,6 +1277,30 @@ section[id] {
   font-size: 1.05rem;
 }
 
+.plan-checks {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.4rem;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.plan-checks li {
+  display: grid;
+  grid-template-columns: 1.4rem 1fr;
+  gap: 0.7rem;
+  align-items: start;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.plan-check-icon {
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-top: 0.1rem;
+  color: var(--accent-text);
+}
+
 .ways {
   list-style: none;
   padding: 0;
