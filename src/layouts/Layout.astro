@@ -48,6 +48,7 @@ const sections = [
     <meta name="generator" content={Astro.generator} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta name="theme-color" content="#2c3c5a" />
+    <meta name="apple-itunes-app" content={`app-id=${site.appStoreId}`} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -86,7 +87,7 @@ const sections = [
               }
             </div>
           </details>
-          <a class="cta" href={`${base}/#get`}>Get the app</a>
+          <a class="cta" href={site.appStore}>Get the app</a>
         </nav>
       </div>
     </header>

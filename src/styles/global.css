@@ -1825,6 +1825,12 @@ section[id] {
   font-size: 1.3rem;
   line-height: 1;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.35s var(--ease-out);
+}
+
+.store-badge:hover {
+  color: #fff;
+  transform: translateY(-3px);
 }
 
 .store-badge svg {

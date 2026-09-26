@@ -426,21 +426,22 @@ const parks = [
       </div>
       <h2 class="big">Your first stamp is <em>waiting up there.</em></h2>
       <p class="closing-sub">
-        {site.status}. Want to hear the day it lands? Send me a note.
+        Free to download for iPhone and Apple Watch. Pro yearly starts with a
+        7-day free trial.
       </p>
       <div class="links">
-        <span class="store-badge" aria-label="Coming soon to the App Store">
+        <a class="store-badge" href={site.appStore} aria-label="Download on the App Store">
           <svg viewBox="0 0 24 24" aria-hidden="true"
             ><path
               d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5a4.3 4.3 0 0 0-3.4-1.8c-1.4-.2-2.8.8-3.5.8s-1.8-.8-3-.8A4.5 4.5 0 0 0 4.7 9.6c-1.6 2.8-.4 6.9 1.1 9.2.8 1.1 1.7 2.3 2.9 2.3s1.6-.8 3-.8 1.8.8 3 .7c1.3 0 2.1-1.1 2.8-2.3a10 10 0 0 0 1.3-2.6 4 4 0 0 1-2.4-3.5ZM14.2 5.8A4 4 0 0 0 15.1 3a4.1 4.1 0 0 0-2.7 1.4 3.8 3.8 0 0 0-1 2.7 3.4 3.4 0 0 0 2.8-1.3Z"
             ></path></svg
           >
-          <span><small>Coming soon to the</small>App Store</span>
-        </span>
+          <span><small>Download on the</small>App Store</span>
+        </a>
         <a
-          class="pill-link"
-          href={`mailto:${site.email}?subject=${encodeURIComponent("Tell me when Hiking Passport launches")}`}
-          >Email me at launch</a
+          class="pill-link ghost"
+          href={`mailto:${site.email}?subject=${encodeURIComponent("Hiking Passport")}`}
+          >Send me a note</a
         >
       </div>
     </div>

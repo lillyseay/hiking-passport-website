@@ -8,7 +8,9 @@ export const site = {
   tagline: "Train for your goal hikes",
   description:
     "Train for the hikes you're chasing with a plan built from how you already move, stairs, strollers, and grocery bags included. The plan bends; your goals don't. Everything stays on your iPhone, with no account and no cloud.",
-  status: "Coming soon to the App Store",
+  status: "Available on the App Store",
+  appStore: "https://apps.apple.com/us/app/hiking-passport/id6761020923",
+  appStoreId: "6761020923",
   email: "team@lillyseay.co",
   maker: { name: "Lilly Seay", url: "https://lillyseay.com" },
   support: "/support/",

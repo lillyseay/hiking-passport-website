@@ -3,7 +3,7 @@
 // milestone signs up the trail and camp where the boot prints end. Stamps and signs
 // are real buttons laid over the canvas, and the dock re-themes the scene and the
 // whole page the way the app's theme picker does.
-import { heroPassport } from "../data/site";
+import { heroPassport, site } from "../data/site";
 import Sun from "@lucide/astro/icons/sun";
 import Moon from "@lucide/astro/icons/moon";
 
@@ -41,7 +41,7 @@ const themes = [
             and stamp each summit when you stand on top.
           </p>
           <div class="hero-actions fade-up" style="--delay: 0.8s">
-            <a class="pill-link" href="#get">Get the app</a>
+            <a class="pill-link" href={site.appStore}>Download the app</a>
             <a class="pill-link ghost" href="#trailhead">How it works</a>
           </div>
         </div>
